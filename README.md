@@ -30,4 +30,6 @@ See the [desktop guide](NOTHING_THEME.md) for palette maintenance, Agent permiss
 
 ## Credits
 
-The Hyprland and Quickshell base comes from [end-4/dots-hyprland](https://github.com/end-4/dots-hyprland). The bundled Kvantum theme adapts work by [Vince Liuice](https://github.com/vinceliuice/Colloid-kde) based on KvAdapta by Tsu Jan. See [GPL-3.0](LICENSE) and the [third-party license notices](licenses/).
+Big cheers to **end-4** and the illogical-impulse crew! 🎉 These dotfiles grew out of their Hyprland and Quickshell setup, and the **AI panel** deserves an extra round of applause. Their original AI sidebar gave me a place to start, and I had a blast giving it a graphite makeover and adding the local Agent tab. [Give end-4’s dotfiles a star!](https://github.com/end-4/dots-hyprland)
+
+The bundled Kvantum theme adapts work by [Vince Liuice](https://github.com/vinceliuice/Colloid-kde) based on KvAdapta by Tsu Jan. See [GPL-3.0](LICENSE) and the [third-party license notices](licenses/).
