@@ -1,0 +1,11 @@
+.pragma library
+var black = "$black"
+var panel = "$panel"
+var surface = "$surface"
+var raised = "$raised"
+var line = "$line"
+var outline = "$outline"
+var cornerRadius = $corner_radius
+var muted = "$muted"
+var text = "$text"
+var red = "$red"

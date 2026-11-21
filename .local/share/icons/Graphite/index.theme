@@ -1,0 +1,27 @@
+[Icon Theme]
+Name=Graphite
+Comment=Monochrome desktop icons
+Inherits=breeze-dark,hicolor
+FollowsColorScheme=true
+Directories=scalable/places,scalable/devices,scalable/apps
+
+[scalable/places]
+Size=32
+Type=Scalable
+MinSize=8
+MaxSize=256
+Context=Places
+
+[scalable/devices]
+Size=32
+Type=Scalable
+MinSize=8
+MaxSize=256
+Context=Devices
+
+[scalable/apps]
+Size=32
+Type=Scalable
+MinSize=8
+MaxSize=256
+Context=Applications

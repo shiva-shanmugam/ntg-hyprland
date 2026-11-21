@@ -1,0 +1,4 @@
+[color]
+background = 'default'
+foreground = '$text'
+gradient = 0

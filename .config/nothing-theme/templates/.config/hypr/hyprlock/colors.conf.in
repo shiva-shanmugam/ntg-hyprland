@@ -1,0 +1,7 @@
+$$text_color = rgba(${text_hex}ff)
+$$entry_border_color = rgba(${line_hex}ff)
+$$entry_background_color = rgba(${panel_hex}ff)
+$$entry_color = rgba(${text_hex}ff)
+$$alert_color = rgba(${red_hex}ff)
+$$font_family = JetBrainsMono Nerd Font Mono
+$$font_family_clock = Panel Matrix

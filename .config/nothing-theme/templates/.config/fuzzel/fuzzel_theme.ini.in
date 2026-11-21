@@ -1,0 +1,12 @@
+[colors]
+background=${black_hex}ff
+text=${text_hex}ff
+selection=${raised_hex}ff
+selection-text=${text_hex}ff
+border=${outline_hex}ff
+match=${muted_hex}ff
+selection-match=${red_hex}ff
+
+[border]
+radius=$corner_radius
+width=1

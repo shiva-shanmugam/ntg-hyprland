@@ -1,0 +1,34 @@
+filekinds:
+  normal: &text {foreground: "#FFFFFF"}
+  directory: {foreground: "#D71921", is_bold: true}
+  symlink: &muted {foreground: "#8A8A8A"}
+  pipe: *muted
+  block_device: *muted
+  char_device: *muted
+  socket: *muted
+  special: *muted
+  executable: *text
+  mount_point: *text
+file_type:
+  image: *text
+  video: *text
+  music: *text
+  crypto: *text
+  document: *text
+  compressed: *muted
+  temp: *muted
+  compiled: *muted
+  build: *text
+  source: *text
+broken_symlink: {foreground: "#D71921"}
+extensions:
+  txt: {icon: &document {glyph: "▫"}}
+  md: {icon: *document}
+  json: {icon: &config {glyph: "≡"}}
+  toml: {icon: *config}
+  yaml: {icon: *config}
+  yml: {icon: *config}
+  conf: {icon: *config}
+  ini: {icon: *config}
+  sh: {icon: &script {glyph: "›"}}
+  fish: {icon: *script}

@@ -1,0 +1,12 @@
+add_newline = false
+format = "$directory$git_branch$cmd_duration$character"
+[directory]
+style = "bold white"
+[git_branch]
+symbol = "· "
+style = "bright-black"
+[cmd_duration]
+style = "bright-black"
+[character]
+success_symbol = "[›](bold red)"
+error_symbol = "[×](bold red)"

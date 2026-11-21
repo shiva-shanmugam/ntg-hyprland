@@ -1,0 +1,23 @@
+{
+  "logo": {
+    "type": "none"
+  },
+  "display": {
+    "color": {
+      "keys": "white",
+      "output": "white",
+      "title": "white"
+    },
+    "separator": "  "
+  },
+  "modules": [
+    "title",
+    "os",
+    "kernel",
+    "wm",
+    "terminal",
+    "cpu",
+    "memory",
+    "uptime"
+  ]
+}

@@ -1,0 +1,69 @@
+:root {
+    --window-bg-color: $black;
+    --window-fg-color: $text;
+    --view-bg-color: $panel;
+    --view-fg-color: $text;
+    --headerbar-bg-color: $surface;
+    --headerbar-fg-color: $text;
+    --headerbar-backdrop-color: $panel;
+    --sidebar-bg-color: $panel;
+    --sidebar-fg-color: $text;
+    --sidebar-border-color: $line;
+    --secondary-sidebar-bg-color: $panel;
+    --secondary-sidebar-fg-color: $text;
+    --card-bg-color: $surface;
+    --card-fg-color: $text;
+    --dialog-bg-color: $raised;
+    --dialog-fg-color: $text;
+    --popover-bg-color: $raised;
+    --popover-fg-color: $text;
+    --accent-color: $text;
+    --accent-bg-color: $text;
+    --accent-fg-color: $black;
+    --destructive-color: $red;
+    --destructive-bg-color: $red;
+    --destructive-fg-color: $text;
+    --success-color: $text;
+    --warning-color: $text;
+}
+@define-color window_bg_color $black;
+@define-color window_fg_color $text;
+@define-color view_bg_color $panel;
+@define-color view_fg_color $text;
+@define-color headerbar_bg_color $surface;
+@define-color headerbar_fg_color $text;
+@define-color headerbar_backdrop_color $panel;
+@define-color sidebar_bg_color $panel;
+@define-color sidebar_fg_color $text;
+@define-color sidebar_border_color $line;
+@define-color secondary_sidebar_bg_color $panel;
+@define-color secondary_sidebar_fg_color $text;
+@define-color card_bg_color $surface;
+@define-color card_fg_color $text;
+@define-color dialog_bg_color $raised;
+@define-color dialog_fg_color $text;
+@define-color popover_bg_color $raised;
+@define-color popover_fg_color $text;
+@define-color accent_color $text;
+@define-color accent_bg_color $text;
+@define-color accent_fg_color $black;
+@define-color destructive_color $red;
+@define-color destructive_bg_color $red;
+@define-color destructive_fg_color $text;
+@define-color success_color $text;
+@define-color warning_color $text;
+@define-color theme_bg_color $black;
+@define-color theme_fg_color $text;
+@define-color theme_base_color $panel;
+@define-color theme_text_color $text;
+@define-color theme_selected_bg_color $text;
+@define-color theme_selected_fg_color $black;
+@define-color borders $line;
+@define-color unfocused_borders $line;
+window, background, .background { background-color: $black; color: $text; }
+headerbar, .toolbar, popover > contents, .card { background: $surface; color: $text; border: 1px solid $line; box-shadow: none; }
+popover > contents, .card { border-radius: ${corner_radius}px; border-color: $outline; }
+button { background-image: none; background-color: $raised; color: $text; border: 1px solid $line; border-radius: 8px; box-shadow: none; }
+button:hover { background-color: $line; }
+button:disabled { color: $muted; }
+selection, row:selected { background-color: $text; color: $black; }

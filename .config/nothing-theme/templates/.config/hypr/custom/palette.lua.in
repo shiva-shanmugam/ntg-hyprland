@@ -1,0 +1,5 @@
+return {
+    outline = "rgb($outline_hex)",
+    corner_radius = $corner_radius,
+    background = "rgb($black_hex)"
+}

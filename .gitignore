@@ -1,0 +1,13 @@
+# Local application state and credentials
+.env
+.env.*
+*.bak
+*.backup
+*.key
+*.pem
+__pycache__/
+*.py[cod]
+.config/illogical-impulse/installed_listfile
+.config/illogical-impulse/installed_true
+.local/libexec/
+.local/state/
