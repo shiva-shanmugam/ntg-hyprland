@@ -8,9 +8,9 @@ Nothing-inspired Hyprland dotfiles with a matte graphite and red palette, a Quic
 
 ![AI panel and Control Centre open together on the graphite wallpaper](docs/screenshots/ai-and-control-centre.webp)
 
-| Command Center | Power menu |
-| --- | --- |
-| ![Open Command Center with notification previews hidden](docs/screenshots/control-center.webp) | ![Open power menu with graphite tiles and red accents](docs/screenshots/power-menu.webp) |
+![Control Centre open on the graphite desktop](docs/screenshots/control-centre.webp)
+
+![Spotify playing in the bar with media controls open](docs/screenshots/spotify.webp)
 
 ## Install
 
