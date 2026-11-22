@@ -12,8 +12,6 @@ Nothing-inspired Hyprland dotfiles with a matte graphite and red palette, a Quic
 | --- | --- |
 | ![Open Command Center with notification previews hidden](docs/screenshots/control-center.webp) | ![Open power menu with graphite tiles and red accents](docs/screenshots/power-menu.webp) |
 
-![Open local Agent sidebar](docs/screenshots/agent.webp)
-
 ## Install
 
 On fresh Arch, run `./install.sh --arch` from a clone to install dependencies and apply the dotfiles. On a working Hyprland and illogical-impulse setup, preview the changes with `./install.sh --config-only --dry-run`, then run `./install.sh --config-only`.
