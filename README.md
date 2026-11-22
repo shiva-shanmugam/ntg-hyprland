@@ -2,25 +2,21 @@
 
 Nothing-inspired Hyprland dotfiles with a matte graphite and red palette, a Quickshell status bar and Command Center, themed terminals, and a local AI sidebar.
 
-![Graphite Arc wallpaper, 1920 × 1080](Wallpapers/graphite-arc-1920x1080.png)
+## Desktop gallery
 
-## Setup
+![Graphite desktop with the dot-clock wallpaper, status bar, and dock](docs/screenshots/desktop.webp)
 
-This configuration uses Hyprland's Lua config and the Quickshell-based [illogical-impulse](https://github.com/end-4/dots-hyprland) desktop. Install the upstream desktop dependencies first. The config was tested on Arch Linux with Quickshell 0.2.1. The icon and cursor settings use Breeze Dark and Bibata Modern Classic as fallbacks.
+| Command Center | Power menu |
+| --- | --- |
+| ![Open Command Center with notification previews hidden](docs/screenshots/control-center.webp) | ![Open power menu with graphite tiles and red accents](docs/screenshots/power-menu.webp) |
 
-Back up your existing dotfiles before copying the configuration and assets. Run these commands from the repository root.
+![Open local Agent sidebar](docs/screenshots/agent.webp)
 
-```sh
-mkdir -p "$HOME/.config" "$HOME/.local/share"
-cp -a .config/. "$HOME/.config/"
-cp -a .local/share/. "$HOME/.local/share/"
-```
+## Install
 
-Start a Hyprland session or run `hyprctl reload` in an existing one. You can apply the bundled wallpaper in an existing session with this command.
+On fresh Arch, run `./install.sh --arch` from a clone to install dependencies and apply the dotfiles. On a working Hyprland and illogical-impulse setup, preview the changes with `./install.sh --config-only --dry-run`, then run `./install.sh --config-only`.
 
-```sh
-"$HOME/.config/quickshell/ii/scripts/colors/switchwall.sh" --image "$HOME/.config/quickshell/ii/assets/images/default_wallpaper.png"
-```
+The [installation guide](docs/INSTALL.md) covers prerequisites, first launch, Ollama, and restoring your configs from the installer backup.
 
 ## AI sidebar
 

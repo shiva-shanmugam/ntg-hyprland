@@ -185,6 +185,7 @@ Scope {
                     }
                     SessionActionButton {
                         id: sessionShutdown
+                        destructive: true
                         buttonIcon: "power_settings_new"
                         buttonText: Translation.tr("Shutdown")
                         onClicked: {

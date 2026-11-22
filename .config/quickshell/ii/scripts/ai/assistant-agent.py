@@ -16,6 +16,8 @@ from agent_workspace import (
     ToolError, Workspace, atomic_write, command, desktop_logs, load_json, save_json, small_int,
 )
 
+from desktop_components import locate
+
 BACKEND = runpy.run_path(str(Path(__file__).with_name("assistant-backend.py")))
 CONNECT = BACKEND["connect"]
 OLLAMA = BACKEND["OLLAMA"]
@@ -224,6 +226,9 @@ class Job:
     def tool(self, callback, name, description, fields=None, needed=None):
         self.tools[name] = (callback, schema(name, description, fields, needed))
 
+    def locate_component(self, query):
+        return locate(self.workspace, query)
+
     def register(self):
         ws = self.workspace
         self.tool(ws.find_files, "find_files", "List files. Pattern is a ripgrep glob, e.g. **/*.qml.",
@@ -241,6 +246,8 @@ class Job:
             if self.settings["desktop"]:
                 self.tool(ws.rebuild_theme, "rebuild_theme", "Stage the existing theme renderer's output using the staged palette.")
         if self.settings["desktop"]:
+            self.tool(self.locate_component, "locate_component", "Find desktop UI files by visible label, icon, or everyday component name. Follow navigation links for menus.",
+                      {"query": STRING}, ["query"])
             self.tool(desktop_logs, "read_logs", "Read recent Quickshell logs or Hyprland configuration errors.",
                       {"source": {"type": "string", "enum": ["quickshell", "hyprland"]}, "limit": INTEGER}, ["source"])
         if self.settings["screen"]:
@@ -301,8 +308,15 @@ class Job:
         self.register()
         messages = [{"role": "system", "content": system_prompt(self.settings)},
                     {"role": "user", "content": self.settings["task"]}]
+        if self.settings["desktop"]:
+            hints = self.locate_component(self.settings["task"])
+            if hints:
+                self.event("Searching", "Located " + ", ".join(item["component"] for item in hints))
+                messages[1]["content"] += "\n\nDesktop component matches (read handler_file for the launcher and opened_file for the destination before describing a navigation link): " + short_result(hints)
         formats = [definition for _, definition in self.tools.values()]
         corrections = 0
+        edit_retries = 0
+        failed_edit = ""
         for step in range(TOOL_STEPS):
             self.boundary()
             # Bound the tool context while retaining the task and the most recent complete turns.
@@ -321,6 +335,8 @@ class Job:
                     else:
                         name, result = self.call(call)
                         seen.add(fingerprint)
+                    if name in {"replace_text", "create_file", "rebuild_theme"}:
+                        failed_edit = result.get("error", "")
                     messages.append({"role": "tool", "tool_name": name, "content": short_result(result)})
                 continue
             answer = reply.get("content", "").strip()
@@ -333,6 +349,14 @@ class Job:
                     raise ToolError("Staged files did not pass validation: " + str(error)) from error
                 corrections += 1
                 messages.append({"role": "user", "content": "Validation failed. Correct the staged files: " + str(error)[:1800]})
+                continue
+            if self.settings["edit"] and not checked:
+                if edit_retries >= 2:
+                    raise ToolError("No changes were staged after retries. " + (failed_edit or answer)[:800])
+                edit_retries += 1
+                messages.append({"role": "user", "content":
+                    "No diff was staged. Reread the relevant lines and retry with a concrete, non-identical replacement. "
+                    "Last edit error: " + failed_edit[:700]})
                 continue
             self.finish(answer, checked)
             return

@@ -1,0 +1,23 @@
+{
+  "Control Center": {
+    "aliases": ["control center", "command center", "quick settings", "right sidebar"],
+    "folder": "sidebarRight",
+    "entry": "SidebarRightContent.qml",
+    "opens": {"GlobalStates.sessionOpen = true": "Power menu"}
+  },
+  "Power menu": {
+    "aliases": ["power", "power icon", "power button", "power menu", "session menu", "restart", "reboot", "shutdown", "shut down", "hibernate", "log out"],
+    "folder": "sessionScreen",
+    "entry": "SessionScreen.qml"
+  },
+  "Status bar": {
+    "aliases": ["status bar", "top bar", "waybar", "clock", "date", "battery", "workspace indicator", "system tray"],
+    "folder": "bar",
+    "entry": "BarContent.qml"
+  },
+  "AI sidebar": {
+    "aliases": ["ai panel", "assistant", "ai sidebar", "chat", "agent tab", "translator"],
+    "folder": "sidebarLeft",
+    "entry": "SidebarLeftContent.qml"
+  }
+}

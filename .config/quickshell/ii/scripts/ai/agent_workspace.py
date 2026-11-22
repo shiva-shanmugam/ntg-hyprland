@@ -34,6 +34,7 @@ PRIVATE_NAMES = {
 PROTECTED_FILES = {
     ".config/quickshell/ii/scripts/ai/assistant-agent.py",
     ".config/quickshell/ii/scripts/ai/agent_workspace.py",
+    ".config/quickshell/ii/scripts/ai/desktop_components.py",
     ".config/quickshell/ii/scripts/ai/assistant-backend.py",
     ".config/quickshell/ii/services/ConfigAgent.qml",
     ".config/quickshell/ii/modules/ii/sidebarLeft/AgentPanel.qml",
