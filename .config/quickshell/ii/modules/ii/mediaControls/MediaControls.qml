@@ -54,7 +54,7 @@ Scope {
 
     Process {
         id: cavaProc
-        running: mediaControlsLoader.active
+        running: mediaControlsLoader.active && root.meaningfulPlayers.some(player => player.isPlaying)
         onRunningChanged: {
             if (!cavaProc.running) {
                 root.visualizerPoints = [];
@@ -73,11 +73,6 @@ Scope {
     Loader {
         id: mediaControlsLoader
         active: GlobalStates.mediaControlsOpen
-        onActiveChanged: {
-            if (!mediaControlsLoader.active && root.realPlayers.length === 0) {
-                GlobalStates.mediaControlsOpen = false;
-            }
-        }
 
         sourceComponent: PanelWindow {
             id: panelWindow
@@ -135,7 +130,6 @@ Scope {
                         visualizerPoints: root.visualizerPoints
                         implicitWidth: root.widgetWidth
                         implicitHeight: root.widgetHeight
-                        radius: Appearance.rounding.surfaceRadius(width, height)
                     }
                 }
 
@@ -158,11 +152,9 @@ Scope {
                         target: placeholderBackground
                     }
 
-                    Rectangle {
+                    PanelSurface {
                         id: placeholderBackground
                         anchors.centerIn: parent
-                        color: Appearance.colors.colLayer0
-                        radius: Appearance.rounding.surfaceRadius(width, height)
                         property real padding: 20
                         implicitWidth: placeholderLayout.implicitWidth + padding * 2
                         implicitHeight: placeholderLayout.implicitHeight + padding * 2
@@ -191,17 +183,17 @@ Scope {
         target: "mediaControls"
 
         function toggle(): void {
-            mediaControlsLoader.active = !mediaControlsLoader.active;
-            if (mediaControlsLoader.active)
+            GlobalStates.mediaControlsOpen = !GlobalStates.mediaControlsOpen;
+            if (GlobalStates.mediaControlsOpen)
                 Notifications.timeoutAll();
         }
 
         function close(): void {
-            mediaControlsLoader.active = false;
+            GlobalStates.mediaControlsOpen = false;
         }
 
         function open(): void {
-            mediaControlsLoader.active = true;
+            GlobalStates.mediaControlsOpen = true;
             Notifications.timeoutAll();
         }
     }

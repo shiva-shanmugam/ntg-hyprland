@@ -1,306 +1,271 @@
 pragma ComponentBehavior: Bound
 import qs.modules.common
-import qs.modules.common.models
+import qs.modules.common.functions
 import qs.modules.common.widgets
 import qs.services
-import qs.modules.common.functions
+import "../../common/Palette.js" as Palette
 import Qt5Compat.GraphicalEffects
 import QtQuick
-import QtQuick.Effects
+import QtQuick.Controls
 import QtQuick.Layouts
-import Quickshell
-import Quickshell.Io
 import Quickshell.Services.Mpris
 
-Item { // Player instance
+Item {
     id: root
+
     required property MprisPlayer player
-    property var artUrl: player?.trackArtUrl
-    property string artDownloadLocation: Directories.coverArt
-    property string artFileName: Qt.md5(artUrl)
-    property string artFilePath: `${artDownloadLocation}/${artFileName}`
-    property color artDominantColor: ColorUtils.mix((colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary), Appearance.colors.colPrimaryContainer, 0.8) || Appearance.m3colors.m3secondaryContainer
-    property bool downloaded: false
     property list<real> visualizerPoints: []
-    property real maxVisualizerValue: 1000 // Max value in the data points
-    property int visualizerSmoothing: 2 // Number of points to average for smoothing
-    property real radius
+    readonly property bool playing: player?.isPlaying ?? false
+    readonly property real duration: Math.max(0, player?.length ?? 0)
+    readonly property real position: Math.max(0, player?.position ?? 0)
+    readonly property string artist: player?.trackArtist ?? ""
 
-    property string displayedArtFilePath: root.downloaded ? Qt.resolvedUrl(artFilePath) : ""
+    component TransportButton: Button {
+        id: control
+        required property string symbol
+        property bool primary: false
 
-    component TrackChangeButton: RippleButton {
-        implicitWidth: 24
-        implicitHeight: 24
+        implicitWidth: primary ? 34 : 28
+        implicitHeight: 32
+        hoverEnabled: true
+        opacity: enabled ? 1 : 0.35
 
-        property var iconName
-        colBackground: ColorUtils.transparentize(blendedColors.colSecondaryContainer, 1)
-        colBackgroundHover: blendedColors.colSecondaryContainerHover
-        colRipple: blendedColors.colSecondaryContainerActive
+        background: Rectangle {
+            radius: Appearance.rounding.windowRounding
+            color: control.down ? Palette.raised : control.primary ? Palette.red
+                : control.hovered ? Palette.raised : Palette.surface
+            border.width: 1
+            border.color: control.visualFocus ? Palette.text : control.primary ? Palette.red : Palette.line
+        }
 
         contentItem: MaterialSymbol {
-            iconSize: Appearance.font.pixelSize.huge
-            fill: 1
+            text: control.symbol
+            iconSize: 20
             horizontalAlignment: Text.AlignHCenter
-            color: blendedColors.colOnSecondaryContainer
-            text: iconName
+            verticalAlignment: Text.AlignVCenter
+            color: Palette.text
+        }
 
-            Behavior on color {
-                animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
-            }
+        StyledToolTip {
+            text: control.text
         }
     }
 
-    Timer { // Force update for revision
-        running: root.player?.playbackState == MprisPlaybackState.Playing
+    Timer {
+        running: root.playing && root.duration > 0
         interval: Config.options.resources.updateInterval
         repeat: true
-        onTriggered: {
-            root.player.positionChanged()
-        }
-    }
-
-    onArtFilePathChanged: {
-        if (root.artUrl.length == 0) {
-            root.artDominantColor = Appearance.m3colors.m3secondaryContainer
-            return;
-        }
-
-        // Binding does not work in Process
-        coverArtDownloader.targetFile = root.artUrl 
-        coverArtDownloader.artFilePath = root.artFilePath
-        // Download
-        root.downloaded = false
-        coverArtDownloader.running = true
-    }
-
-    Process { // Cover art downloader
-        id: coverArtDownloader
-        property string targetFile: root.artUrl
-        property string artFilePath: root.artFilePath
-        command: [ "bash", "-c", `[ -f ${artFilePath} ] || curl -4 -sSL '${targetFile}' -o '${artFilePath}'` ]
-        onExited: (exitCode, exitStatus) => {
-            root.downloaded = true
-        }
-    }
-
-    ColorQuantizer {
-        id: colorQuantizer
-        source: root.displayedArtFilePath
-        depth: 0 // 2^0 = 1 color
-        rescaleSize: 1 // Rescale to 1x1 pixel for faster processing
-    }
-
-    property QtObject blendedColors: AdaptedMaterialScheme {
-        color: artDominantColor
+        onTriggered: root.player?.positionChanged()
     }
 
     StyledRectangularShadow {
-        target: background
+        target: panel
     }
-    Rectangle { // Background
-        id: background
+
+    PanelSurface {
+        id: panel
         anchors.fill: parent
         anchors.margins: Appearance.sizes.elevationMargin
-        color: ColorUtils.applyAlpha(blendedColors.colLayer0, 1)
-        radius: root.radius
 
-        layer.enabled: true
-        layer.effect: OpacityMask {
-            maskSource: Rectangle {
-                width: background.width
-                height: background.height
-                radius: background.radius
+        Item {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: 2
+            height: 24
+            clip: true
+            visible: root.playing && root.visualizerPoints.length > 1
+
+            WaveVisualizer {
+                live: root.playing
+                points: root.visualizerPoints
+                color: Palette.red
             }
-        }
-
-        StyledImage {
-            id: blurredArt
-            anchors.fill: parent
-            source: root.displayedArtFilePath
-            fillMode: Image.PreserveAspectCrop
-            cache: false
-            antialiasing: true
-            asynchronous: true
-
-            layer.enabled: true
-            layer.effect: StyledBlurEffect {
-                source: blurredArt
-            }
-
-            Rectangle {
-                anchors.fill: parent
-                color: ColorUtils.transparentize(blendedColors.colLayer0, 0.3)
-                radius: root.radius
-            }
-        }
-
-        WaveVisualizer {
-            id: visualizerCanvas
-            anchors.fill: parent
-            live: root.player?.isPlaying
-            points: root.visualizerPoints
-            maxVisualizerValue: root.maxVisualizerValue
-            smoothing: root.visualizerSmoothing
-            color: blendedColors.colPrimary
         }
 
         RowLayout {
             anchors.fill: parent
-            anchors.margins: 13
-            spacing: 15
+            anchors.margins: 12
+            spacing: 14
 
-            Rectangle { // Art background
-                id: artBackground
+            Rectangle {
+                id: artwork
                 Layout.fillHeight: true
-                implicitWidth: height
-                radius: Appearance.rounding.verysmall
-                color: ColorUtils.transparentize(blendedColors.colLayer1, 0.5)
+                Layout.preferredWidth: Math.max(0, panel.height - 24)
+                radius: Appearance.rounding.windowRounding
+                color: Palette.surface
+                border.width: 1
+                border.color: Palette.line
 
-                layer.enabled: true
-                layer.effect: OpacityMask {
-                    maskSource: Rectangle {
-                        width: artBackground.width
-                        height: artBackground.height
-                        radius: artBackground.radius
-                    }
+                MaterialSymbol {
+                    anchors.centerIn: parent
+                    visible: cover.status !== Image.Ready
+                    text: "album"
+                    iconSize: 34
+                    color: Palette.muted
                 }
 
-                StyledImage { // Art image
-                    id: mediaArt
-                    property int size: parent.height
+                StyledImage {
+                    id: cover
                     anchors.fill: parent
-
-                    source: root.displayedArtFilePath
+                    anchors.margins: 1
+                    source: root.player?.trackArtUrl || ""
                     fillMode: Image.PreserveAspectCrop
-                    cache: false
-                    antialiasing: true
-
-                    width: size
-                    height: size
+                    retainWhileLoading: false
+                    layer.enabled: true
+                    layer.effect: OpacityMask {
+                        maskSource: Rectangle {
+                            width: cover.width
+                            height: cover.height
+                            radius: artwork.radius - 1
+                        }
+                    }
                 }
             }
 
-            ColumnLayout { // Info & controls
+            ColumnLayout {
+                Layout.fillWidth: true
                 Layout.fillHeight: true
                 spacing: 2
 
-                StyledText {
-                    id: trackTitle
+                RowLayout {
                     Layout.fillWidth: true
-                    font.pixelSize: Appearance.font.pixelSize.large
-                    color: blendedColors.colOnLayer0
-                    elide: Text.ElideRight
-                    text: StringUtils.cleanMusicTitle(root.player?.trackTitle) || "Untitled"
-                    animateChange: true
-                    animationDistanceX: 6
-                    animationDistanceY: 0
-                }
-                StyledText {
-                    id: trackArtist
-                    Layout.fillWidth: true
-                    font.pixelSize: Appearance.font.pixelSize.smaller
-                    color: blendedColors.colSubtext
-                    elide: Text.ElideRight
-                    text: root.player?.trackArtist
-                    animateChange: true
-                    animationDistanceX: 6
-                    animationDistanceY: 0
-                }
-                Item { Layout.fillHeight: true }
-                Item {
-                    Layout.fillWidth: true
-                    implicitHeight: trackTime.implicitHeight + sliderRow.implicitHeight
+                    spacing: 6
+
+                    Rectangle {
+                        width: 6
+                        height: 6
+                        radius: width / 2
+                        color: root.playing ? Palette.red : "transparent"
+                        border.width: 1
+                        border.color: root.playing ? Palette.red : Palette.muted
+                    }
 
                     StyledText {
-                        id: trackTime
-                        anchors.bottom: sliderRow.top
-                        anchors.bottomMargin: 5
-                        anchors.left: parent.left
-                        font.pixelSize: Appearance.font.pixelSize.small
-                        color: blendedColors.colSubtext
+                        Layout.fillWidth: true
+                        text: root.player?.identity || Translation.tr("Media")
+                        textFormat: Text.PlainText
                         elide: Text.ElideRight
-                        text: `${StringUtils.friendlyTimeForSeconds(root.player?.position)} / ${StringUtils.friendlyTimeForSeconds(root.player?.length)}`
+                        font.family: Appearance.font.family.monospace
+                        font.pixelSize: 10
+                        color: Palette.muted
                     }
-                    RowLayout {
-                        id: sliderRow
-                        anchors {
-                            bottom: parent.bottom
-                            left: parent.left
-                            right: parent.right
-                        }
-                        TrackChangeButton {
-                            iconName: "skip_previous"
-                            downAction: () => root.player?.previous()
-                        }
-                        Item {
-                            id: progressBarContainer
+                }
+
+                StyledText {
+                    Layout.fillWidth: true
+                    text: StringUtils.cleanMusicTitle(root.player?.trackTitle) || Translation.tr("Unknown Title")
+                    textFormat: Text.PlainText
+                    elide: Text.ElideRight
+                    font.pixelSize: 17
+                    color: Palette.text
+                }
+
+                StyledText {
+                    Layout.fillWidth: true
+                    visible: root.artist.length > 0
+                    text: root.artist
+                    textFormat: Text.PlainText
+                    elide: Text.ElideRight
+                    font.pixelSize: 12
+                    color: Palette.muted
+                }
+
+                Item {
+                    Layout.fillHeight: true
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 4
+
+                    TransportButton {
+                        symbol: "skip_previous"
+                        text: Translation.tr("Previous track")
+                        enabled: root.player?.canGoPrevious ?? false
+                        onClicked: root.player?.previous()
+                    }
+
+                    TransportButton {
+                        primary: true
+                        symbol: root.playing ? "pause" : "play_arrow"
+                        text: root.playing ? Translation.tr("Pause") : Translation.tr("Play")
+                        enabled: root.player?.canTogglePlaying ?? false
+                        onClicked: root.player?.togglePlaying()
+                    }
+
+                    TransportButton {
+                        symbol: "skip_next"
+                        text: Translation.tr("Next track")
+                        enabled: root.player?.canGoNext ?? false
+                        onClicked: root.player?.next()
+                    }
+
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Layout.leftMargin: 6
+                        spacing: 0
+
+                        Slider {
+                            id: seek
                             Layout.fillWidth: true
-                            implicitHeight: Math.max(sliderLoader.implicitHeight, progressBarLoader.implicitHeight)
+                            implicitHeight: 16
+                            leftPadding: 4
+                            rightPadding: 4
+                            from: 0
+                            to: Math.max(1, root.duration)
+                            stepSize: 1
+                            value: root.position
+                            enabled: root.duration > 0 && (root.player?.canSeek ?? false)
+                            hoverEnabled: true
+                            Accessible.name: Translation.tr("Playback position")
+                            onMoved: root.player.position = value
 
-                            Loader {
-                                id: sliderLoader
-                                anchors.fill: parent
-                                active: root.player?.canSeek ?? false
-                                sourceComponent: StyledSlider { 
-                                    configuration: StyledSlider.Configuration.Wavy
-                                    highlightColor: blendedColors.colPrimary
-                                    trackColor: blendedColors.colSecondaryContainer
-                                    handleColor: blendedColors.colPrimary
-                                    value: root.player?.position / root.player?.length
-                                    onMoved: {
-                                        root.player.position = value * root.player.length;
-                                    }
+                            background: Rectangle {
+                                x: seek.leftPadding
+                                y: (seek.height - height) / 2
+                                width: seek.availableWidth
+                                height: 3
+                                radius: height / 2
+                                color: Palette.line
+
+                                Rectangle {
+                                    width: root.duration > 0 ? parent.width * seek.visualPosition : 0
+                                    height: parent.height
+                                    radius: parent.radius
+                                    color: Palette.red
                                 }
                             }
 
-                            Loader {
-                                id: progressBarLoader
-                                anchors {
-                                    verticalCenter: parent.verticalCenter
-                                    left: parent.left
-                                    right: parent.right
-                                }
-                                active: !(root.player?.canSeek ?? false)
-                                sourceComponent: StyledProgressBar { 
-                                    wavy: root.player?.isPlaying
-                                    highlightColor: blendedColors.colPrimary
-                                    trackColor: blendedColors.colSecondaryContainer
-                                    value: root.player?.position / root.player?.length
-                                }
+                            handle: Rectangle {
+                                x: seek.leftPadding + seek.visualPosition * seek.availableWidth - width / 2
+                                y: (seek.height - height) / 2
+                                implicitWidth: 7
+                                implicitHeight: 7
+                                radius: width / 2
+                                visible: seek.enabled
+                                color: seek.hovered || seek.pressed || seek.visualFocus ? Palette.text : Palette.red
+                            }
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 4
+
+                            StyledText {
+                                Layout.fillWidth: true
+                                text: StringUtils.friendlyTimeForSeconds(root.position)
+                                font.family: Appearance.font.family.monospace
+                                font.pixelSize: 10
+                                color: Palette.muted
                             }
 
-                            
-                        }
-                        TrackChangeButton {
-                            iconName: "skip_next"
-                            downAction: () => root.player?.next()
-                        }
-                    }
-
-                    RippleButton {
-                        id: playPauseButton
-                        anchors.right: parent.right
-                        anchors.bottom: sliderRow.top
-                        anchors.bottomMargin: 5
-                        property real size: 44
-                        implicitWidth: size
-                        implicitHeight: size
-                        downAction: () => root.player.togglePlaying();
-
-                        buttonRadius: root.player?.isPlaying ? Appearance?.rounding.normal : size / 2
-                        colBackground: root.player?.isPlaying ? blendedColors.colPrimary : blendedColors.colSecondaryContainer
-                        colBackgroundHover: root.player?.isPlaying ? blendedColors.colPrimaryHover : blendedColors.colSecondaryContainerHover
-                        colRipple: root.player?.isPlaying ? blendedColors.colPrimaryActive : blendedColors.colSecondaryContainerActive
-
-                        contentItem: MaterialSymbol {
-                            iconSize: Appearance.font.pixelSize.huge
-                            fill: 1
-                            horizontalAlignment: Text.AlignHCenter
-                            color: root.player?.isPlaying ? blendedColors.colOnPrimary : blendedColors.colOnSecondaryContainer
-                            text: root.player?.isPlaying ? "pause" : "play_arrow"
-
-                            Behavior on color {
-                                animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+                            StyledText {
+                                visible: root.duration > 0
+                                text: StringUtils.friendlyTimeForSeconds(root.duration)
+                                font.family: Appearance.font.family.monospace
+                                font.pixelSize: 10
+                                color: Palette.muted
                             }
                         }
                     }

@@ -96,7 +96,7 @@ Item { // Bar content region
             rightMargin: root.islandSpacing
         }
         island: root.showIslands
-        padding: 10
+        padding: 4
         width: Math.min(implicitWidth, Math.max(0, middleCenterGroup.x - root.islandSpacing - root.edgeMargin))
 
         Behavior on implicitWidth {
@@ -106,7 +106,7 @@ Item { // Bar content region
         Media {
             id: mediaWidget
             Layout.fillWidth: true
-            Layout.maximumWidth: 200
+            Layout.maximumWidth: 220
         }
 
     }
