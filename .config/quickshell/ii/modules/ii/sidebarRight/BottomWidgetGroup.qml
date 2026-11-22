@@ -16,16 +16,10 @@ Rectangle {
     border.width: 1
     clip: true
     implicitHeight: collapsed ? collapsedBottomWidgetGroupRow.implicitHeight : 350
-    property int selectedTab: Persistent.states.sidebar.bottomGroup.tab
+    property int selectedTab: Math.max(0, Math.min(tabs.length - 1, Persistent.states.sidebar.bottomGroup.tab))
     property int previousIndex: -1
     property bool collapsed: Persistent.states.sidebar.bottomGroup.collapsed
     property var tabs: [
-        {
-            "type": "calendar",
-            "name": Translation.tr("Calendar"),
-            "icon": "calendar_month",
-            "widget": "calendar/CalendarWidget.qml"
-        },
         {
             "type": "todo",
             "name": Translation.tr("To Do"),

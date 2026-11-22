@@ -1,15 +1,10 @@
 //@ pragma UseQApplication
 //@ pragma Env QS_NO_RELOAD_POPUP=1
 //@ pragma Env QT_QUICK_CONTROLS_STYLE=Basic
-//@ pragma Env QT_QUICK_FLICKABLE_WHEEL_DECELERATION=10000
-
-// Adjust this to make the app smaller or larger
-//@ pragma Env QT_SCALE_FACTOR=1
 
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Window
 import Quickshell
 import qs.services
 import qs.modules.common
@@ -18,10 +13,16 @@ import qs.modules.common.functions as CF
 
 ApplicationWindow {
     id: root
-    property string firstRunFilePath: CF.FileUtils.trimFileProtocol(`${Directories.state}/user/first_run.txt`)
-    property string firstRunFileContent: "This file is just here to confirm you've been greeted :>"
-    property real contentPadding: 8
-    property bool showNextTime: false
+    visible: true
+    onClosing: Qt.quit()
+    title: "ntg-hyprland settings"
+    minimumWidth: 750
+    minimumHeight: 500
+    width: 1100
+    height: 750
+    color: DesktopPalette.black
+    property int currentPage: 0
+    readonly property url configUrl: Directories.config + "/illogical-impulse/config.json"
     property var pages: [
         {
             name: Translation.tr("Quick"),
@@ -65,237 +66,193 @@ ApplicationWindow {
             component: "modules/settings/About.qml"
         }
     ]
-    property int currentPage: 0
 
-    visible: true
-    onClosing: Qt.quit()
-    title: "illogical-impulse Settings"
+    palette.window: DesktopPalette.black
+    palette.windowText: DesktopPalette.text
+    palette.base: DesktopPalette.panel
+    palette.text: DesktopPalette.text
+    palette.button: DesktopPalette.surface
+    palette.buttonText: DesktopPalette.text
+    palette.highlight: DesktopPalette.red
+    palette.highlightedText: DesktopPalette.onAccent
 
     Component.onCompleted: {
-        MaterialThemeLoader.reapplyTheme()
-        Config.readWriteDelay = 0 // Settings app always only sets one var at a time so delay isn't needed
+        MaterialThemeLoader.reapplyTheme();
+        Config.readWriteDelay = 0;
     }
 
-    minimumWidth: 750
-    minimumHeight: 500
-    width: 1100
-    height: 750
-    color: Appearance.m3colors.m3background
+    function movePage(delta: int, wrap: bool): void {
+        const next = currentPage + delta;
+        currentPage = wrap ? (next + pages.length) % pages.length : Math.max(0, Math.min(next, pages.length - 1));
+    }
 
-    ColumnLayout {
-        anchors {
-            fill: parent
-            margins: contentPadding
-        }
+    Shortcut { sequence: "Ctrl+PageDown"; onActivated: root.movePage(1, false) }
+    Shortcut { sequence: "Ctrl+PageUp"; onActivated: root.movePage(-1, false) }
+    Shortcut { sequence: "Ctrl+Tab"; onActivated: root.movePage(1, true) }
+    Shortcut { sequence: "Ctrl+Shift+Tab"; onActivated: root.movePage(-1, true) }
 
-        Keys.onPressed: (event) => {
-            if (event.modifiers === Qt.ControlModifier) {
-                if (event.key === Qt.Key_PageDown) {
-                    root.currentPage = Math.min(root.currentPage + 1, root.pages.length - 1)
-                    event.accepted = true;
-                } 
-                else if (event.key === Qt.Key_PageUp) {
-                    root.currentPage = Math.max(root.currentPage - 1, 0)
-                    event.accepted = true;
-                }
-                else if (event.key === Qt.Key_Tab) {
-                    root.currentPage = (root.currentPage + 1) % root.pages.length;
-                    event.accepted = true;
-                }
-                else if (event.key === Qt.Key_Backtab) {
-                    root.currentPage = (root.currentPage - 1 + root.pages.length) % root.pages.length;
-                    event.accepted = true;
-                }
-            }
-        }
+    component RailButton: Button {
+        id: control
+        property string glyph
+        property bool selected: false
+        Layout.fillWidth: true
+        implicitHeight: 40
+        hoverEnabled: true
+        leftPadding: 12
+        rightPadding: 8
 
-        Item { // Titlebar
-            visible: Config.options?.windows.showTitlebar
-            Layout.fillWidth: true
-            Layout.fillHeight: false
-            implicitHeight: Math.max(titleText.implicitHeight, windowControlsRow.implicitHeight)
-            StyledText {
-                id: titleText
-                anchors {
-                    left: Config.options.windows.centerTitle ? undefined : parent.left
-                    horizontalCenter: Config.options.windows.centerTitle ? parent.horizontalCenter : undefined
-                    verticalCenter: parent.verticalCenter
-                    leftMargin: 12
-                }
-                color: Appearance.colors.colOnLayer0
-                text: Translation.tr("Settings")
-                font {
-                    family: Appearance.font.family.title
-                    pixelSize: Appearance.font.pixelSize.title
-                    variableAxes: Appearance.font.variableAxes.title
-                }
-            }
-            RowLayout { // Window controls row
-                id: windowControlsRow
+        background: Rectangle {
+            radius: Appearance.rounding.windowRounding
+            color: control.selected || control.hovered ? DesktopPalette.surface : "transparent"
+            border.width: control.selected || control.visualFocus ? 1 : 0
+            border.color: control.visualFocus ? DesktopPalette.red : DesktopPalette.line
+
+            Rectangle {
+                anchors.left: parent.left
+                anchors.leftMargin: 1
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                RippleButton {
-                    buttonRadius: Appearance.rounding.full
-                    implicitWidth: 35
-                    implicitHeight: 35
-                    onClicked: root.close()
-                    contentItem: MaterialSymbol {
-                        anchors.centerIn: parent
-                        horizontalAlignment: Text.AlignHCenter
-                        text: "close"
-                        iconSize: 20
+                visible: control.selected
+                width: 3
+                height: 16
+                radius: 1.5
+                color: DesktopPalette.red
+            }
+        }
+
+        contentItem: RowLayout {
+            spacing: 10
+            MaterialSymbol {
+                text: control.glyph
+                iconSize: 21
+                fill: 0
+                color: control.selected ? DesktopPalette.red : DesktopPalette.muted
+            }
+            StyledText {
+                Layout.fillWidth: true
+                text: control.text
+                font.family: Appearance.font.family.monospace
+                font.pixelSize: 13
+                color: control.selected || control.hovered ? DesktopPalette.text : DesktopPalette.muted
+                elide: Text.ElideRight
+            }
+        }
+    }
+
+    RowLayout {
+        anchors.fill: parent
+        anchors.margins: 14
+        spacing: 14
+
+        PanelSurface {
+            Layout.preferredWidth: Math.max(170, Math.min(210, root.width * 0.18))
+            Layout.fillHeight: true
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 12
+                spacing: 4
+
+                RowLayout {
+                    Layout.topMargin: 8
+                    Layout.bottomMargin: 12
+                    Layout.leftMargin: 4
+                    spacing: 8
+                    Rectangle { width: 7; height: 7; radius: 3.5; color: DesktopPalette.red }
+                    StyledText {
+                        text: "ntg-hyprland"
+                        color: DesktopPalette.text
+                        font.family: Appearance.font.family.monospace
+                        font.pixelSize: 14
+                        font.bold: true
+                    }
+                }
+
+                Repeater {
+                    model: root.pages
+                    delegate: RailButton {
+                        required property int index
+                        required property var modelData
+                        text: modelData.name
+                        glyph: modelData.icon
+                        selected: index === root.currentPage
+                        onClicked: root.currentPage = index
+                    }
+                }
+
+                Item { Layout.fillHeight: true }
+
+                RailButton {
+                    id: configButton
+                    glyph: "edit_document"
+                    text: copied ? Translation.tr("Path copied") : Translation.tr("Config file")
+                    property bool copied: false
+                    onClicked: Qt.openUrlExternally(root.configUrl)
+                    TapHandler {
+                        acceptedButtons: Qt.RightButton
+                        onTapped: {
+                            Quickshell.clipboardText = CF.FileUtils.trimFileProtocol(root.configUrl.toString());
+                            configButton.copied = true;
+                            copiedTimer.restart();
+                        }
+                    }
+                    Timer {
+                        id: copiedTimer
+                        interval: 1500
+                        onTriggered: configButton.copied = false
                     }
                 }
             }
         }
 
-        RowLayout { // Window content with navigation rail and content pane
+        ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: contentPadding
-            Item {
-                id: navRailWrapper
-                Layout.fillHeight: true
-                Layout.margins: 5
-                implicitWidth: navRail.expanded ? 150 : fab.baseSize
-                Behavior on implicitWidth {
-                    animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+            spacing: 8
+
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.leftMargin: 14
+                Layout.rightMargin: 4
+                Layout.topMargin: 7
+                Layout.bottomMargin: 3
+
+                StyledText {
+                    Layout.fillWidth: true
+                    text: root.pages[root.currentPage].name
+                    color: DesktopPalette.text
+                    font.family: Appearance.font.family.title
+                    font.pixelSize: 28
+                    font.bold: true
                 }
-                NavigationRail { // Window content with navigation rail and content pane
-                    id: navRail
-                    anchors {
-                        left: parent.left
-                        top: parent.top
-                        bottom: parent.bottom
+
+                Button {
+                    id: closeButton
+                    visible: Config.options.windows.showTitlebar
+                    implicitWidth: 34
+                    implicitHeight: 34
+                    text: Translation.tr("Close settings")
+                    onClicked: root.close()
+                    background: Rectangle {
+                        radius: Appearance.rounding.windowRounding
+                        color: closeButton.hovered ? DesktopPalette.raised : DesktopPalette.panel
+                        border.color: closeButton.visualFocus ? DesktopPalette.red : DesktopPalette.line
+                        border.width: 1
                     }
-                    spacing: 10
-                    expanded: root.width > 900
-                    
-                    NavigationRailExpandButton {
-                        focus: root.visible
-                    }
-
-                    FloatingActionButton {
-                        id: fab
-                        property bool justCopied: false
-                        iconText: justCopied ? "check" : "edit"
-                        buttonText: justCopied ? Translation.tr("Path copied") : Translation.tr("Config file")
-                        expanded: navRail.expanded
-                        downAction: () => {
-                            Qt.openUrlExternally(`${Directories.config}/illogical-impulse/config.json`);
-                        }
-                        altAction: () => {
-                            Quickshell.clipboardText = CF.FileUtils.trimFileProtocol(`${Directories.config}/illogical-impulse/config.json`);
-                            fab.justCopied = true;
-                            revertTextTimer.restart()
-                        }
-
-                        Timer {
-                            id: revertTextTimer
-                            interval: 1500
-                            onTriggered: {
-                                fab.justCopied = false;
-                            }
-                        }
-
-                        StyledToolTip {
-                            text: Translation.tr("Open the shell config file\nAlternatively right-click to copy path")
-                        }
-                    }
-
-                    NavigationRailTabArray {
-                        currentIndex: root.currentPage
-                        expanded: navRail.expanded
-                        Repeater {
-                            model: root.pages
-                            NavigationRailButton {
-                                required property var index
-                                required property var modelData
-                                toggled: root.currentPage === index
-                                onPressed: root.currentPage = index;
-                                expanded: navRail.expanded
-                                buttonIcon: modelData.icon
-                                buttonIconRotation: modelData.iconRotation || 0
-                                buttonText: modelData.name
-                                showToggledHighlight: false
-                            }
-                        }
-                    }
-
-                    Item {
-                        Layout.fillHeight: true
+                    contentItem: MaterialSymbol {
+                        text: "close"
+                        iconSize: 19
+                        color: closeButton.hovered ? DesktopPalette.red : DesktopPalette.muted
+                        horizontalAlignment: Text.AlignHCenter
                     }
                 }
             }
-            Rectangle { // Content container
+
+            Loader {
+                Layout.minimumWidth: 0
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                color: Appearance.m3colors.m3surfaceContainerLow
-                radius: Appearance.rounding.windowRounding - root.contentPadding
-
-                Loader {
-                    id: pageLoader
-                    anchors.fill: parent
-                    opacity: 1.0
-
-                    active: Config.ready
-                    Component.onCompleted: {
-                        source = root.pages[0].component
-                    }
-
-                    Connections {
-                        target: root
-                        function onCurrentPageChanged() {
-                            switchAnim.complete();
-                            switchAnim.start();
-                        }
-                    }
-
-                    SequentialAnimation {
-                        id: switchAnim
-
-                        NumberAnimation {
-                            target: pageLoader
-                            properties: "opacity"
-                            from: 1
-                            to: 0
-                            duration: 100
-                            easing.type: Appearance.animation.elementMoveExit.type
-                            easing.bezierCurve: Appearance.animationCurves.emphasizedFirstHalf
-                        }
-                        ParallelAnimation {
-                            PropertyAction {
-                                target: pageLoader
-                                property: "source"
-                                value: root.pages[root.currentPage].component
-                            }
-                            PropertyAction {
-                                target: pageLoader
-                                property: "anchors.topMargin"
-                                value: 20
-                            }
-                        }
-                        ParallelAnimation {
-                            NumberAnimation {
-                                target: pageLoader
-                                properties: "opacity"
-                                from: 0
-                                to: 1
-                                duration: 200
-                                easing.type: Appearance.animation.elementMoveEnter.type
-                                easing.bezierCurve: Appearance.animationCurves.emphasizedLastHalf
-                            }
-                            NumberAnimation {
-                                target: pageLoader
-                                properties: "anchors.topMargin"
-                                to: 0
-                                duration: 200
-                                easing.type: Appearance.animation.elementMoveEnter.type
-                                easing.bezierCurve: Appearance.animationCurves.emphasizedLastHalf
-                            }
-                        }
-                    }
-                }
+                active: Config.ready
+                source: root.pages[root.currentPage].component
             }
         }
     }

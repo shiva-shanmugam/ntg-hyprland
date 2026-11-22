@@ -37,14 +37,13 @@ Item {
         columns: root.vertical ? 1 : -1
         anchors {
             verticalCenter: root.vertical ? undefined : parent.verticalCenter
-            horizontalCenter: root.vertical ? parent.horizontalCenter : undefined
-            left: root.vertical ? undefined : parent.left
-            right: root.vertical ? undefined : parent.right
+            left: parent.left
+            right: parent.right
             top: root.vertical ? parent.top : undefined
             bottom: root.vertical ? parent.bottom : undefined
             margins: root.padding
         }
         columnSpacing: 4
-        rowSpacing: 12
+        rowSpacing: 4
     }
 }

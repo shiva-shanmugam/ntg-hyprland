@@ -129,11 +129,7 @@ Scope { // Scope
             }
 
             // Content
-            StyledRectangularShadow {
-                target: sidebarLeftBackground
-                radius: sidebarLeftBackground.radius
-            }
-            PanelSurface {
+            Item {
                 id: sidebarLeftBackground
                 anchors.top: parent.top
                 anchors.left: parent.left
@@ -179,11 +175,9 @@ Scope { // Scope
                 if (!visible) GlobalStates.sidebarLeftOpen = false;
             }
             
-            Rectangle {
+            Item {
                 id: detachedSidebarBackground
                 anchors.fill: parent
-                radius: Appearance.rounding.surfaceRadius(width, height)
-                color: Appearance.colors.colLayer0
 
                 Keys.onPressed: (event) => {
                     if (event.modifiers === Qt.ControlModifier) {

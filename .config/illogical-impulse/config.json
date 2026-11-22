@@ -157,7 +157,7 @@
     "screenList": [],
     "showBackground": true,
     "tooltips": {
-      "clickToShow": false
+      "clickToShow": true
     },
     "topLeftIcon": "dots",
     "utilButtons": {
@@ -329,8 +329,7 @@
   },
   "panelFamily": "ii",
   "policies": {
-    "ai": 2,
-    "weeb": 1
+    "ai": 2
   },
   "regionSelector": {
     "annotation": {
@@ -387,14 +386,6 @@
   "sidebar": {
     "ai": {
       "textFadeIn": false
-    },
-    "booru": {
-      "allowNsfw": false,
-      "defaultProvider": "yandere",
-      "limit": 20,
-      "zerochan": {
-        "username": "[unset]"
-      }
     },
     "cornerOpen": {
       "bottom": false,

@@ -1,0 +1,8 @@
+[colors-dark]
+background=$black_hex
+foreground=$text_hex
+selection-background=$text_hex
+selection-foreground=$black_hex
+regular0=$black_hex
+regular1=$red_hex
+bright1=$red_hex

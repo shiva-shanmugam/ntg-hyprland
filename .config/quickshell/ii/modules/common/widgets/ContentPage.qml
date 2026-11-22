@@ -5,25 +5,26 @@ import qs.modules.common.widgets
 
 StyledFlickable {
     id: root
-    property real baseWidth: 600
-    property bool forceWidth: false
-    property real bottomContentPadding: 100
+    property real bottomContentPadding: 28
+    readonly property real gutter: Math.max(12, Math.min(24, width * 0.025))
 
     default property alias contentData: contentColumn.data
 
     clip: true
-    contentHeight: contentColumn.implicitHeight + root.bottomContentPadding // Add some padding at the bottom
-    implicitWidth: contentColumn.implicitWidth
+    contentWidth: width
+    contentHeight: contentColumn.y + contentColumn.implicitHeight + bottomContentPadding
     
     ColumnLayout {
         id: contentColumn
-        width: root.forceWidth ? root.baseWidth : Math.max(root.baseWidth, implicitWidth)
         anchors {
             top: parent.top
-            horizontalCenter: parent.horizontalCenter
-            margins: 20
+            left: parent.left
+            right: parent.right
+            topMargin: 6
+            leftMargin: root.gutter
+            rightMargin: root.gutter
         }
-        spacing: 30
+        spacing: 14
     }
 
 }

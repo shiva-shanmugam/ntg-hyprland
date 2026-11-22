@@ -11,14 +11,17 @@ import Quickshell.Services.UPower
 Item {
     id: root
     property bool borderless: Config.options.bar.borderless
+    property bool vertical: false
     visible: rowLayout.implicitWidth > 0
-    implicitWidth: rowLayout.implicitWidth + rowLayout.spacing * 2
+    implicitWidth: rowLayout.implicitWidth + (vertical ? 0 : rowLayout.columnSpacing * 2)
     implicitHeight: rowLayout.implicitHeight
 
-    RowLayout {
+    GridLayout {
         id: rowLayout
 
-        spacing: 4
+        columns: root.vertical ? 1 : -1
+        columnSpacing: 4
+        rowSpacing: 4
         anchors.centerIn: parent
 
         Loader {

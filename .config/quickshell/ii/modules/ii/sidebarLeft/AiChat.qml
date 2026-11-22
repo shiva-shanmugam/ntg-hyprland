@@ -445,27 +445,11 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                 visible: messageListView.count === 0 && parent.height > 220
                 spacing: 12
 
-                RowLayout {
+                MaterialSymbol {
                     Layout.alignment: Qt.AlignHCenter
-                    spacing: 3
-                    Repeater {
-                        model: [2, 3, 5, 6, 4, 8, 10, 7, 5, 3, 2]
-                        Column {
-                            id: dotColumn
-                            required property int modelData
-                            Layout.alignment: Qt.AlignVCenter
-                            spacing: 2
-                            Repeater {
-                                model: dotColumn.modelData
-                                Rectangle {
-                                    width: 3
-                                    height: 3
-                                    radius: 1.5
-                                    color: Appearance.colors.colSubtext
-                                }
-                            }
-                        }
-                    }
+                    text: "forum"
+                    iconSize: 36
+                    color: DesktopPalette.muted
                 }
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
@@ -587,8 +571,8 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
             Layout.fillWidth: true
             radius: Appearance.rounding.surfaceRadius(width, height)
             border.width: 1
-            border.color: messageInputField.activeFocus ? Appearance.colors.colSubtext : Appearance.colors.colOutlineVariant
-            color: Appearance.colors.colLayer1
+            border.color: messageInputField.activeFocus ? DesktopPalette.outline : DesktopPalette.line
+            color: DesktopPalette.surface
             implicitHeight: Math.max(inputFieldRowLayout.implicitHeight + inputFieldRowLayout.anchors.topMargin + commandButtonsRow.implicitHeight + commandButtonsRow.anchors.bottomMargin + spacing, 45) + (attachedFileIndicator.implicitHeight + spacing + attachedFileIndicator.anchors.topMargin)
             clip: true
 
@@ -630,7 +614,8 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                         anchors.fill: parent
                         wrapMode: TextArea.Wrap
                         padding: 10
-                        color: activeFocus ? Appearance.m3colors.m3onSurface : Appearance.m3colors.m3onSurfaceVariant
+                        color: DesktopPalette.text
+                        placeholderTextColor: DesktopPalette.muted
                         placeholderText: Translation.tr("Message…  / for commands")
 
                         background: null
@@ -794,7 +779,7 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                         text: "attach_file"
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        color: parent.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+                        color: parent.enabled ? DesktopPalette.text : DesktopPalette.muted
                     }
                 }
 
@@ -810,7 +795,7 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                         text: root.voiceTranscribing ? "sync" : (voiceRecordProcess.running ? "stop" : "mic")
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        color: voiceRecordProcess.running ? Appearance.colors.colError : Appearance.colors.colOnLayer1
+                        color: voiceRecordProcess.running ? DesktopPalette.red : DesktopPalette.text
                     }
                 }
 
@@ -827,14 +812,14 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                         else if (root.handleInput(messageInputField.text)) messageInputField.clear();
                     }
                     background: Rectangle {
-                        radius: Appearance.rounding.small
-                        color: sendButton.enabled ? Appearance.colors.colLayer2 : "transparent"
+                        radius: Appearance.rounding.windowRounding
+                        color: sendButton.enabled ? DesktopPalette.red : DesktopPalette.raised
                     }
                     contentItem: MaterialSymbol {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         iconSize: 21
-                        color: sendButton.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+                        color: sendButton.enabled ? DesktopPalette.onAccent : DesktopPalette.muted
                         text: Ai.busy ? "stop" : "arrow_upward"
                     }
                 }

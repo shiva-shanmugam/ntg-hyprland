@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import qs.services
 import qs.modules.common
+import qs.modules.common.widgets
 import QtQuick
 import QtQuick.Layouts
 
@@ -16,7 +17,8 @@ ColumnLayout {
     // Time
     ClockText {
         id: timeTextTop
-        text: clockColumn.isVertical ? DateTime.time.split(":")[0].padStart(2, "0") : DateTime.time
+        visible: clockColumn.isVertical
+        text: DateTime.time.split(":")[0].padStart(2, "0")
         color: clockColumn.colText
         horizontalAlignment: Text.AlignHCenter
         font {
@@ -28,6 +30,17 @@ ColumnLayout {
                     "ROND": Config.options.background.widgets.clock.digital.font.roundness
                 })
         }
+    }
+
+    ClockFace {
+        visible: !clockColumn.isVertical
+        Layout.alignment: Qt.AlignHCenter
+        value: DateTime.time
+        color: clockColumn.colText
+        font: timeTextTop.font
+        animateChange: timeTextTop.animateChange
+        renderStyle: Text.Raised
+        styleColor: Appearance.colors.colShadow
     }
 
     Loader {
@@ -52,7 +65,7 @@ ColumnLayout {
     // Date
     ClockText {
         visible: Config.options.background.widgets.clock.digital.showDate
-        Layout.topMargin: -20
+        Layout.topMargin: clockColumn.isVertical ? -20 : -14
         Layout.fillWidth: true
         text: DateTime.longDate
         color: clockColumn.colText

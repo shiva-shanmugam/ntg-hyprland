@@ -57,7 +57,6 @@ Item { // Bar content region
         ScrollHint {
             reveal: barLeftSideMouseArea.hovered
             icon: Hyprsunset.gamma === 100 ? "light_mode" : "wb_twilight"
-            tooltipText: Translation.tr("Scroll to change brightness")
             side: "left"
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
@@ -143,38 +142,7 @@ Item { // Bar content region
             island: root.showIslands
             padding: 4
 
-            FocusedScrollMouseArea {
-                implicitWidth: 34
-                implicitHeight: 32
-
-                onScrollDown: Audio.decrementVolume()
-                onScrollUp: Audio.incrementVolume()
-                onMovedAway: GlobalStates.osdVolumeOpen = false
-
-                AbstractButton {
-                    id: commandCenterButton
-                    anchors.fill: parent
-                    padding: 0
-                    hoverEnabled: true
-                    text: Translation.tr("Command Center")
-                    readonly property bool panelOpen: GlobalStates.sidebarRightOpen
-                    onClicked: GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen
-
-                    background: Rectangle {
-                        radius: Appearance.rounding.windowRounding
-                        color: commandCenterButton.panelOpen ? Appearance.colors.colSecondaryContainer
-                            : commandCenterButton.hovered ? Appearance.colors.colLayer1Hover : "transparent"
-                    }
-
-                    contentItem: MaterialSymbol {
-                        text: "instant_mix"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        iconSize: Appearance.font.pixelSize.larger
-                        color: commandCenterButton.panelOpen ? Appearance.colors.colOnSecondaryContainer : Appearance.colors.colOnLayer0
-                    }
-                }
-            }
+            ControlCentreButton {}
         }
 
         BarGroup {

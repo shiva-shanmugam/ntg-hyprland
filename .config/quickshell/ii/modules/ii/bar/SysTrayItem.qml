@@ -6,7 +6,6 @@ import Quickshell.Widgets
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
 
 MouseArea {
     id: root
@@ -17,13 +16,16 @@ MouseArea {
     signal menuClosed()
 
     hoverEnabled: true
-    acceptedButtons: Qt.LeftButton | Qt.RightButton
+    acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
     implicitWidth: 20
     implicitHeight: 20
     onPressed: (event) => {
         switch (event.button) {
         case Qt.LeftButton:
             item.activate();
+            break;
+        case Qt.MiddleButton:
+            detailsPopup.toggle();
             break;
         case Qt.RightButton:
             if (item.hasMenu)
@@ -34,9 +36,6 @@ MouseArea {
             break;
         }
         event.accepted = true;
-    }
-    onEntered: {
-        tooltip.text = TrayService.getTooltipForItem(root.item);
     }
 
     Loader {
@@ -75,11 +74,17 @@ MouseArea {
         height: parent.height
     }
 
-    PopupToolTip {
-        id: tooltip
-        extraVisibleCondition: root.containsMouse
-        alternativeVisibleCondition: extraVisibleCondition
-        anchorEdges: (!Config.options.bar.bottom && !Config.options.bar.vertical) ? Edges.Bottom : Edges.Top
-    }
+    StyledPopup {
+        id: detailsPopup
+        hoverTarget: null
+        anchorTarget: root
 
+        StyledText {
+            anchors.centerIn: parent
+            width: Math.min(280, implicitWidth)
+            text: TrayService.getTooltipForItem(root.item)
+            textFormat: Text.PlainText
+            wrapMode: Text.Wrap
+        }
+    }
 }

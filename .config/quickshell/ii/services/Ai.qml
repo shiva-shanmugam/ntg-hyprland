@@ -240,7 +240,7 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 root.promptFiles = text.trim().split("\n").filter(path =>
-                    /\.(md|txt)$/i.test(path) && !/\/(ii-Imouto|nyarch-Acchan)\.md$/.test(path)
+                    /\.(md|txt)$/i.test(path)
                 );
             }
         }

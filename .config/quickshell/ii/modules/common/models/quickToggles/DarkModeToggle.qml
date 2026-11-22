@@ -13,13 +13,7 @@ QuickToggleModel {
     toggled: Appearance.m3colors.darkmode
     icon: "contrast"
     
-    mainAction: () => {
-        if (Appearance.m3colors.darkmode) {
-            Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "light", "--noswitch"]);
-        } else {
-            Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "dark", "--noswitch"]);
-        }
-    }
+    mainAction: () => MaterialThemeLoader.toggleLightDark()
 
     tooltipText: Translation.tr("Dark Mode")
 }

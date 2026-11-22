@@ -69,15 +69,12 @@ Singleton {
             }
 
             property JsonObject sidebar: JsonObject {
+                property string nothingBluetoothName: ""
+                property string nothingBluetoothArt: "bluetooth"
                 property JsonObject bottomGroup: JsonObject {
                     property bool collapsed: false
                     property int tab: 0
                 }
-            }
-
-            property JsonObject booru: JsonObject {
-                property bool allowNsfw: false
-                property string provider: "yandere"
             }
 
             property JsonObject idle: JsonObject {

@@ -3,7 +3,6 @@ import qs.modules.common
 import qs.modules.common.functions
 import qs.modules.common.widgets
 import qs.services
-import "../../common/Palette.js" as Palette
 import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Controls
@@ -32,10 +31,10 @@ Item {
 
         background: Rectangle {
             radius: Appearance.rounding.windowRounding
-            color: control.down ? Palette.raised : control.primary ? Palette.red
-                : control.hovered ? Palette.raised : Palette.surface
+            color: control.down ? DesktopPalette.raised : control.primary ? DesktopPalette.red
+                : control.hovered ? DesktopPalette.raised : DesktopPalette.surface
             border.width: 1
-            border.color: control.visualFocus ? Palette.text : control.primary ? Palette.red : Palette.line
+            border.color: control.visualFocus ? DesktopPalette.text : control.primary ? DesktopPalette.red : DesktopPalette.line
         }
 
         contentItem: MaterialSymbol {
@@ -43,7 +42,7 @@ Item {
             iconSize: 20
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            color: Palette.text
+            color: control.primary && !control.down ? DesktopPalette.onAccent : DesktopPalette.text
         }
 
         StyledToolTip {
@@ -79,7 +78,7 @@ Item {
             WaveVisualizer {
                 live: root.playing
                 points: root.visualizerPoints
-                color: Palette.red
+                color: DesktopPalette.red
             }
         }
 
@@ -93,16 +92,16 @@ Item {
                 Layout.fillHeight: true
                 Layout.preferredWidth: Math.max(0, panel.height - 24)
                 radius: Appearance.rounding.windowRounding
-                color: Palette.surface
+                color: DesktopPalette.surface
                 border.width: 1
-                border.color: Palette.line
+                border.color: DesktopPalette.line
 
                 MaterialSymbol {
                     anchors.centerIn: parent
                     visible: cover.status !== Image.Ready
                     text: "album"
                     iconSize: 34
-                    color: Palette.muted
+                    color: DesktopPalette.muted
                 }
 
                 StyledImage {
@@ -136,9 +135,9 @@ Item {
                         width: 6
                         height: 6
                         radius: width / 2
-                        color: root.playing ? Palette.red : "transparent"
+                        color: root.playing ? DesktopPalette.red : "transparent"
                         border.width: 1
-                        border.color: root.playing ? Palette.red : Palette.muted
+                        border.color: root.playing ? DesktopPalette.red : DesktopPalette.muted
                     }
 
                     StyledText {
@@ -148,7 +147,7 @@ Item {
                         elide: Text.ElideRight
                         font.family: Appearance.font.family.monospace
                         font.pixelSize: 10
-                        color: Palette.muted
+                        color: DesktopPalette.muted
                     }
                 }
 
@@ -158,7 +157,7 @@ Item {
                     textFormat: Text.PlainText
                     elide: Text.ElideRight
                     font.pixelSize: 17
-                    color: Palette.text
+                    color: DesktopPalette.text
                 }
 
                 StyledText {
@@ -168,7 +167,7 @@ Item {
                     textFormat: Text.PlainText
                     elide: Text.ElideRight
                     font.pixelSize: 12
-                    color: Palette.muted
+                    color: DesktopPalette.muted
                 }
 
                 Item {
@@ -227,13 +226,13 @@ Item {
                                 width: seek.availableWidth
                                 height: 3
                                 radius: height / 2
-                                color: Palette.line
+                                color: DesktopPalette.line
 
                                 Rectangle {
                                     width: root.duration > 0 ? parent.width * seek.visualPosition : 0
                                     height: parent.height
                                     radius: parent.radius
-                                    color: Palette.red
+                                    color: DesktopPalette.red
                                 }
                             }
 
@@ -244,7 +243,7 @@ Item {
                                 implicitHeight: 7
                                 radius: width / 2
                                 visible: seek.enabled
-                                color: seek.hovered || seek.pressed || seek.visualFocus ? Palette.text : Palette.red
+                                color: seek.hovered || seek.pressed || seek.visualFocus ? DesktopPalette.text : DesktopPalette.red
                             }
                         }
 
@@ -257,7 +256,7 @@ Item {
                                 text: StringUtils.friendlyTimeForSeconds(root.position)
                                 font.family: Appearance.font.family.monospace
                                 font.pixelSize: 10
-                                color: Palette.muted
+                                color: DesktopPalette.muted
                             }
 
                             StyledText {
@@ -265,7 +264,7 @@ Item {
                                 text: StringUtils.friendlyTimeForSeconds(root.duration)
                                 font.family: Appearance.font.family.monospace
                                 font.pixelSize: 10
-                                color: Palette.muted
+                                color: DesktopPalette.muted
                             }
                         }
                     }

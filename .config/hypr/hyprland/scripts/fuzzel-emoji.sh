@@ -26,7 +26,7 @@ exit
 😀 grinning face face smile happy joy :D grin
 😃 grinning face with big eyes face happy joy haha :D :) smile funny
 😄 grinning face with smiling eyes face happy joy funny haha laugh like :D :) smile
-😁 beaming face with smiling eyes face happy smile joy kawaii
+😁 beaming face with smiling eyes face happy smile joy
 😆 grinning squinting face happy joy lol satisfied haha face glad XD laugh
 😅 grinning face with sweat face hot happy laugh sweat smile relief
 🤣 rolling on the floor laughing face rolling floor laughing lol haha rofl

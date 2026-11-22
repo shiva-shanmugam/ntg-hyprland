@@ -3,7 +3,6 @@ import qs.modules.common
 import qs.modules.common.functions
 import qs.modules.common.widgets
 import qs.services
-import "../../common/Palette.js" as Palette
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Mpris
@@ -54,7 +53,7 @@ MouseArea {
     Rectangle {
         anchors.fill: parent
         radius: Appearance.rounding.windowRounding
-        color: root.panelOpen || root.containsMouse ? Palette.surface : "transparent"
+        color: root.panelOpen || root.containsMouse ? DesktopPalette.surface : "transparent"
     }
 
     Rectangle {
@@ -66,16 +65,16 @@ MouseArea {
         width: 26
         height: width
         radius: Appearance.rounding.windowRounding
-        color: Palette.raised
+        color: DesktopPalette.raised
         border.width: 1
-        border.color: root.panelOpen ? Palette.red : Palette.line
+        border.color: root.panelOpen ? DesktopPalette.red : DesktopPalette.line
 
         MaterialSymbol {
             anchors.centerIn: parent
             anchors.verticalCenterOffset: playbackProgress.visible ? -1 : 0
             text: root.playing ? "graphic_eq" : "music_note"
             iconSize: 17
-            color: root.playing ? Palette.red : Palette.text
+            color: root.playing ? DesktopPalette.red : DesktopPalette.text
         }
 
         Rectangle {
@@ -90,13 +89,13 @@ MouseArea {
             visible: root.duration > 0
             height: 2
             radius: 1
-            color: Palette.line
+            color: DesktopPalette.line
 
             Rectangle {
                 width: parent.width * root.progress
                 height: parent.height
                 radius: parent.radius
-                color: Palette.red
+                color: DesktopPalette.red
             }
         }
     }
@@ -119,7 +118,7 @@ MouseArea {
             textFormat: Text.PlainText
             elide: Text.ElideRight
             font.pixelSize: 13
-            color: Palette.text
+            color: DesktopPalette.text
         }
 
         StyledText {
@@ -130,7 +129,7 @@ MouseArea {
             textFormat: Text.PlainText
             elide: Text.ElideRight
             font.pixelSize: 10
-            color: Palette.muted
+            color: DesktopPalette.muted
         }
     }
 }

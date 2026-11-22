@@ -11,6 +11,7 @@ Switch {
     implicitHeight: 32 * root.scale
     implicitWidth: 52 * root.scale
     property color activeColor: Appearance?.colors.colPrimary ?? "#685496"
+    property color activeThumbColor: Appearance.m3colors.m3onPrimary
     property color inactiveColor: Appearance?.colors.colSurfaceContainerHighest ?? "#45464F"
 
     PointingHandInteraction {}
@@ -37,7 +38,7 @@ Switch {
         width: (root.pressed || root.down) ? (28 * root.scale) : root.checked ? (24 * root.scale) : (16 * root.scale)
         height: (root.pressed || root.down) ? (28 * root.scale) : root.checked ? (24 * root.scale) : (16 * root.scale)
         radius: Appearance.rounding.full
-        color: root.checked ? Appearance.m3colors.m3onPrimary : Appearance.m3colors.m3outline
+        color: root.checked ? root.activeThumbColor : Appearance.m3colors.m3outline
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: root.checked ? ((root.pressed || root.down) ? (22 * root.scale) : 24 * root.scale) : ((root.pressed || root.down) ? (2 * root.scale) : 8 * root.scale)

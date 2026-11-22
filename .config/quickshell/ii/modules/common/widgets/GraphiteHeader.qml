@@ -20,6 +20,23 @@ ClippingRectangle {
         horizontalAlignment: Image.AlignRight
     }
 
+    Rectangle {
+        anchors.fill: parent
+        visible: !DesktopPalette.dark
+        property color tint: DesktopPalette.black
+        id: artWash
+
+        gradient: Gradient {
+            orientation: Gradient.Horizontal
+            GradientStop { position: 0; color: artWash.tint }
+            GradientStop { position: 0.69; color: artWash.tint }
+            GradientStop {
+                position: 1
+                color: Qt.rgba(artWash.tint.r, artWash.tint.g, artWash.tint.b, 0.38)
+            }
+        }
+    }
+
     Column {
         anchors.left: parent.left
         anchors.leftMargin: 16
@@ -44,7 +61,7 @@ ClippingRectangle {
             font.family: Appearance.font.family.monospace
             font.pixelSize: 11
             elide: Text.ElideRight
-            color: "#c6c6c6"
+            color: DesktopPalette.dark ? "#c6c6c6" : DesktopPalette.muted
         }
     }
 }

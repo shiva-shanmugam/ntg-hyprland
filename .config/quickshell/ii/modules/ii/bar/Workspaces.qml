@@ -81,7 +81,7 @@ Item {
         updateWorkspaceOccupied();
     }
 
-    implicitWidth: root.vertical ? Appearance.sizes.verticalBarWidth : (root.workspaceButtonWidth * root.workspacesShown)
+    implicitWidth: root.vertical ? root.workspaceButtonWidth : (root.workspaceButtonWidth * root.workspacesShown)
     implicitHeight: root.vertical ? (root.workspaceButtonWidth * root.workspacesShown) : Appearance.sizes.barHeight
 
     // Scroll to switch workspaces
@@ -198,10 +198,9 @@ Item {
             Button {
                 id: button
                 property int workspaceValue: workspaceGroup * root.workspacesShown + index + 1
-                implicitHeight: vertical ? Appearance.sizes.verticalBarWidth : Appearance.sizes.barHeight
-                implicitWidth: vertical ? Appearance.sizes.verticalBarWidth : Appearance.sizes.verticalBarWidth
+                implicitHeight: vertical ? root.workspaceButtonWidth : Appearance.sizes.barHeight
                 onPressed: Hyprland.dispatch(`hl.dsp.focus({ workspace = ${workspaceValue}})`)
-                width: vertical ? undefined : root.workspaceButtonWidth
+                width: root.workspaceButtonWidth
                 height: vertical ? root.workspaceButtonWidth : undefined
 
                 background: Item {

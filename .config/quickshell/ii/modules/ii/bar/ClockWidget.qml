@@ -7,24 +7,31 @@ import QtQuick.Layouts
 Item {
     id: root
     property bool borderless: Config.options.bar.borderless
+    property bool vertical: false
     property bool showDate: Config.options.bar.verbose
-    implicitWidth: rowLayout.implicitWidth
-    implicitHeight: Appearance.sizes.barHeight
+    readonly property real verticalWidth: Appearance.sizes.baseVerticalBarWidth - 8
+    implicitWidth: vertical ? Math.min(verticalWidth, clockLayout.implicitWidth) : clockLayout.implicitWidth
+    implicitHeight: vertical ? clockLayout.implicitHeight : Appearance.sizes.barHeight
 
-    RowLayout {
-        id: rowLayout
+    GridLayout {
+        id: clockLayout
         anchors.centerIn: parent
-        spacing: 4
+        columns: root.vertical ? 1 : -1
+        columnSpacing: 4
+        rowSpacing: 2
 
-        StyledText {
+        ClockFace {
+            Layout.alignment: root.vertical ? Qt.AlignHCenter : Qt.AlignVCenter
+            Layout.topMargin: root.vertical ? 0 : 4
+            scale: root.vertical ? Math.min(1, root.verticalWidth / Math.max(1, implicitWidth)) : 1
             font.family: Appearance.font.family.numbers
-            font.pixelSize: 23
+            font.pixelSize: root.vertical ? 17 : 23
             color: Appearance.colors.colOnLayer0
-            text: DateTime.time
+            value: DateTime.time
         }
 
         StyledText {
-            visible: root.showDate
+            visible: root.showDate && !root.vertical
             font.pixelSize: Appearance.font.pixelSize.smaller
             color: Appearance.colors.colOnLayer1
             text: "•"
@@ -32,10 +39,13 @@ Item {
 
         StyledText {
             visible: root.showDate
+            Layout.alignment: root.vertical ? Qt.AlignHCenter : Qt.AlignVCenter
+            Layout.maximumWidth: root.vertical ? root.verticalWidth : Infinity
             font.family: Appearance.font.family.monospace
-            font.pixelSize: Appearance.font.pixelSize.smaller
+            font.pixelSize: root.vertical ? 10 : Appearance.font.pixelSize.smaller
             color: Appearance.colors.colOnLayer1
-            text: DateTime.longDate
+            text: root.vertical ? DateTime.shortDate : DateTime.longDate
+            elide: Text.ElideRight
         }
     }
 
@@ -44,7 +54,13 @@ Item {
         anchors.fill: parent
         hoverEnabled: !Config.options.bar.tooltips.clickToShow
 
+        cursorShape: Qt.PointingHandCursor
+        onClicked: event => {
+            if (event.button === Qt.LeftButton) infoPopup.toggle();
+        }
+
         ClockWidgetPopup {
+            id: infoPopup
             hoverTarget: mouseArea
         }
     }

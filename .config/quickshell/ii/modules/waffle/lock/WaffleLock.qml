@@ -97,7 +97,7 @@ LockScreen {
         //         root.context.unlocked(LockContext.ActionEnum.Unlock);
         //         GlobalStates.screenLocked = false;
         //     }
-        //     text: "woah it doesnt work let me out pls uwu colon three"
+        //     text: "Lock screen test"
         // }
 
         function switchToFocusedView() {

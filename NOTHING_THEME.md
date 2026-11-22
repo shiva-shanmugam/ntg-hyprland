@@ -1,18 +1,19 @@
 # Graphite desktop guide
 
-The desktop uses a fixed black and graphite palette. Red marks active workspaces, notifications, recording, errors, and the Kitty cursor. Panel Matrix supplies the clock numerals. The bar puts the Command Center to the left of the clock and battery, and the battery tooltip shows the percentage.
+NTG uses graphite and warm-white palettes with a shared red accent. Panel Matrix supplies the clock numerals. Open the calendar by clicking the date and check battery percentage by clicking the battery.
 
-## Palette and cursor
+## Appearance and cursor
 
-Edit `~/.config/nothing-theme/palette.json`, then rebuild the generated config files.
+Use **Settings → Quick → Appearance**, the **Dark mode / Light mode** tile in Control Center, or **Ctrl+Super+Shift+D**. The mode is saved in `~/.config/nothing-theme/mode`. Quickshell updates as soon as it reads the active palette.
+
+The renderer refreshes GTK preferences, the KDE color scheme, Kvantum, Hyprland, Kitty and the generated config used by Foot, Fuzzel, eza, CAVA, btop and hyprlock. Reopen applications that cache their theme or specify their own appearance. The wallpaper stays selected across both modes.
+
+Edit `~/.config/nothing-theme/palette.json` for dark or `palette-light.json` for light. Run the renderer to regenerate the current mode.
 
 ```sh
-python3 "$HOME/.config/nothing-theme/render.py"
-hyprctl reload
+python3 "$HOME/.config/nothing-theme/render.py" --apply
 hyprctl configerrors
 ```
-
-The renderer updates the Hyprland, Quickshell, Kitty, eza, GTK, KDE, Fuzzel, CAVA, btop, and hyprlock palettes. Reopen applications that cache their colors. KDE users can reselect **Nothing Dark** in System Settings.
 
 To update the Graphite Pointer assets after a palette change, run the pointer renderer with `xcursorgen` installed.
 

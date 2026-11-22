@@ -22,11 +22,13 @@ MouseArea {
     Row {
         id: batteryProgress
         anchors.centerIn: parent
+        anchors.verticalCenterOffset: 1
         spacing: 2
         Repeater {
             model: 6
             Rectangle {
                 required property int index
+                anchors.verticalCenter: parent.verticalCenter
                 width: 4
                 height: 4
                 radius: 2
@@ -41,6 +43,11 @@ MouseArea {
             text: "bolt"
             iconSize: 12
         }
+    }
+
+    cursorShape: Qt.PointingHandCursor
+    onClicked: event => {
+        if (event.button === Qt.LeftButton) batteryPopup.toggle();
     }
 
     BatteryPopup {

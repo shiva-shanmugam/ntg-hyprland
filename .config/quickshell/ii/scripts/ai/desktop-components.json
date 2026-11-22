@@ -1,6 +1,12 @@
 {
   "Control Center": {
     "aliases": ["control center", "command center", "quick settings", "right sidebar"],
+    "folder": "sidebarRight/nothing",
+    "entry": "NothingControlCentre.qml",
+    "opens": {"GlobalStates.sessionOpen = true": "Power menu"}
+  },
+  "Legacy Control Center": {
+    "aliases": ["legacy control center", "legacy command center"],
     "folder": "sidebarRight",
     "entry": "SidebarRightContent.qml",
     "opens": {"GlobalStates.sessionOpen = true": "Power menu"}

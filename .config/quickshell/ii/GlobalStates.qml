@@ -10,6 +10,7 @@ pragma ComponentBehavior: Bound
 Singleton {
     id: root
     property bool barOpen: true
+    property var barPopup: null
     property bool crosshairOpen: false
     property bool sidebarLeftOpen: false
     property bool sidebarRightOpen: false
@@ -34,7 +35,8 @@ Singleton {
     onSidebarRightOpenChanged: {
         if (GlobalStates.sidebarRightOpen) {
             Notifications.timeoutAll();
-            Notifications.markAllRead();
+            if (Config.options.panelFamily !== "ii" || !Config.options.sidebar.nothingControlCentre)
+                Notifications.markAllRead();
         }
     }
 

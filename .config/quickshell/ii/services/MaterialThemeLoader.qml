@@ -15,13 +15,9 @@ Singleton {
     id: root
     property string filePath: Directories.generatedMaterialThemePath
     readonly property bool wallpaperThemesEnabled: Config.ready && Config.options.appearance.wallpaperTheming.enableAppsAndShell
-    property var originalColors: ({})
-
     onWallpaperThemesEnabledChanged: {
-        if (wallpaperThemesEnabled) return;
-        for (const key of Object.keys(originalColors)) {
-            Appearance.m3colors[key] = originalColors[key];
-        }
+        if (!wallpaperThemesEnabled)
+            Appearance.wallpaperColors = {};
     }
 
     function reapplyTheme() {
@@ -30,23 +26,18 @@ Singleton {
 
     function applyColors(fileContent) {
         if (!wallpaperThemesEnabled || !fileContent) return;
-        const json = JSON.parse(fileContent)
-        if (!("darkmode" in originalColors)) {
-            originalColors.darkmode = Appearance.m3colors.darkmode;
-        }
-        for (const key in json) {
-            if (json.hasOwnProperty(key)) {
-                // Convert snake_case to CamelCase
-                const camelCaseKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase())
-                const m3Key = `m3${camelCaseKey}`
-                if (!(m3Key in originalColors)) {
-                    originalColors[m3Key] = Appearance.m3colors[m3Key];
-                }
-                Appearance.m3colors[m3Key] = json[key]
+        try {
+            const json = JSON.parse(fileContent);
+            const entries = {};
+            for (const key of Object.keys(json)) {
+                const name = "m3" + key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+                if (name in Appearance.m3colors)
+                    entries[name] = json[key];
             }
+            Appearance.wallpaperColors = entries;
+        } catch (error) {
+            console.warn("Could not read generated wallpaper colors:", error.message);
         }
-        
-        Appearance.m3colors.darkmode = (Appearance.m3colors.m3background.hslLightness < 0.5)
     }
 
     function resetFilePathNextTime() {
@@ -89,10 +80,20 @@ Singleton {
         onLoadFailed: root.resetFilePathNextTime();
     }
 
-    function toggleLightDark() {
-        const currentlyDark = Appearance.m3colors.darkmode;
-        Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", currentlyDark ? "light" : "dark", "--noswitch"]);
+    function setMode(mode: string): void {
+        if (mode !== "light" && mode !== "dark")
+            return;
+        if (wallpaperThemesEnabled)
+            Config.options.appearance.wallpaperTheming.enableAppsAndShell = false;
+        Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/nothing-theme/render.py",
+                                 "--mode", mode, "--apply"]);
     }
+
+    function toggleLightDark() {
+        root.setMode(root.darkMode ? "light" : "dark");
+    }
+
+    readonly property bool darkMode: Appearance.m3colors.darkmode
 
     GlobalShortcut {
         name: "toggleLightDark"
@@ -106,8 +107,16 @@ Singleton {
     IpcHandler {
         target: "theme"
 
+        function currentMode(): string {
+            return root.darkMode ? "dark" : "light";
+        }
+
         function toggleLightDark(): void {
             root.toggleLightDark();
+        }
+
+        function setMode(mode: string): void {
+            root.setMode(mode);
         }
     }
 }

@@ -46,18 +46,18 @@ Item {
         verticalPadding: 4
         background: Rectangle {
             radius: Appearance.rounding.windowRounding
-            border.width: 1
-            border.color: Appearance.colors.colOutlineVariant
-            color: control.emphasized && control.enabled ? Appearance.colors.colOnLayer1
-                : control.hovered && control.enabled ? Appearance.colors.colLayer2Hover : Appearance.colors.colLayer2
+            border.width: control.emphasized && control.enabled && !control.visualFocus ? 0 : 1
+            border.color: control.visualFocus ? DesktopPalette.red : DesktopPalette.line
+            color: control.emphasized && control.enabled ? DesktopPalette.red
+                : control.hovered && control.enabled ? DesktopPalette.raised : DesktopPalette.surface
         }
         contentItem: StyledText {
             text: control.text
             font.pixelSize: Appearance.font.pixelSize.small
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            color: control.emphasized && control.enabled ? Appearance.colors.colLayer0
-                : control.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+            color: control.emphasized && control.enabled ? DesktopPalette.onAccent
+                : control.enabled ? DesktopPalette.text : DesktopPalette.muted
         }
     }
 
@@ -72,16 +72,15 @@ Item {
             implicitWidth: 15
             implicitHeight: 15
             radius: 4
-            color: Appearance.colors.colLayer2
-            border.width: 1
-            border.color: control.checked ? Appearance.colors.colSubtext : Appearance.colors.colOutlineVariant
-            Rectangle {
+            color: control.checked ? DesktopPalette.red : DesktopPalette.surface
+            border.width: control.checked ? 0 : 1
+            border.color: control.visualFocus ? DesktopPalette.red : DesktopPalette.line
+            MaterialSymbol {
                 anchors.centerIn: parent
-                width: 7
-                height: width
-                radius: width / 2
                 visible: control.checked
-                color: Appearance.colors.colError
+                text: "check"
+                iconSize: 12
+                color: DesktopPalette.onAccent
             }
         }
         contentItem: StyledText {
@@ -89,7 +88,7 @@ Item {
             verticalAlignment: Text.AlignVCenter
             text: control.text
             font.pixelSize: Appearance.font.pixelSize.small
-            color: control.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+            color: control.enabled ? DesktopPalette.text : DesktopPalette.muted
         }
     }
 
@@ -97,7 +96,7 @@ Item {
         Layout.fillWidth: true
         textFormat: Text.PlainText
         wrapMode: Text.WordWrap
-        color: Appearance.colors.colOnLayer1
+        color: DesktopPalette.text
     }
 
     ColumnLayout {
@@ -112,7 +111,7 @@ Item {
                 Layout.fillWidth: true
                 text: root?.project ? root.project : Translation.tr("Desktop configs")
                 elide: Text.ElideMiddle
-                color: Appearance.colors.colSubtext
+                color: DesktopPalette.muted
                 font.family: Appearance.font.family.monospace
                 font.pixelSize: Appearance.font.pixelSize.small
             }
@@ -149,7 +148,7 @@ Item {
 
                 JobText {
                     text: root?.job?.stage ?? Translation.tr("Search configs, diagnose an error, or describe a change.")
-                    color: ConfigAgent.active ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+                    color: ConfigAgent.active ? DesktopPalette.text : DesktopPalette.muted
                     font.family: Appearance.font.family.monospace
                     font.pixelSize: Appearance.font.pixelSize.small
                 }
@@ -157,7 +156,7 @@ Item {
                 JobText {
                     visible: Boolean(ConfigAgent.controlError)
                     text: ConfigAgent.controlError
-                    color: Appearance.colors.colError
+                    color: DesktopPalette.red
                 }
                 JobText {
                     visible: Boolean(root.job.result)
@@ -171,7 +170,7 @@ Item {
                         text: modelData
                         font.family: Appearance.font.family.monospace
                         font.pixelSize: Appearance.font.pixelSize.small
-                        color: Appearance.colors.colSubtext
+                        color: DesktopPalette.muted
                     }
                 }
 
@@ -204,12 +203,12 @@ Item {
                     readOnly: true
                     selectByMouse: true
                     wrapMode: TextEdit.Wrap
-                    color: Appearance.colors.colOnLayer1
+                    color: DesktopPalette.text
                     font.family: Appearance.font.family.monospace
                     font.pixelSize: Appearance.font.pixelSize.small
                     background: Rectangle {
                         radius: Appearance.rounding.windowRounding
-                        color: Appearance.colors.colLayer2
+                        color: DesktopPalette.raised
                     }
                 }
 
@@ -219,7 +218,7 @@ Item {
                         required property var modelData
                         text: modelData.text
                         font.pixelSize: Appearance.font.pixelSize.small
-                        color: Appearance.colors.colSubtext
+                        color: DesktopPalette.muted
                     }
                 }
             }
@@ -234,15 +233,15 @@ Item {
             wrapMode: TextEdit.Wrap
             textFormat: TextEdit.PlainText
             selectByMouse: true
-            color: Appearance.colors.colOnLayer1
-            placeholderTextColor: Appearance.colors.colSubtext
+            color: DesktopPalette.text
+            placeholderTextColor: DesktopPalette.muted
             font.family: Appearance.font.family.monospace
             font.pixelSize: Appearance.font.pixelSize.normal
             background: Rectangle {
                 radius: Appearance.rounding.windowRounding
-                color: Appearance.colors.colLayer1
+                color: DesktopPalette.surface
                 border.width: 1
-                border.color: taskInput.activeFocus ? Appearance.colors.colSubtext : Appearance.colors.colOutlineVariant
+                border.color: taskInput.activeFocus ? DesktopPalette.outline : DesktopPalette.line
             }
             Keys.onPressed: event => {
                 if ((event.key === Qt.Key_Return || event.key === Qt.Key_Enter) && (event.modifiers & Qt.ControlModifier)) {

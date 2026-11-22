@@ -16,7 +16,7 @@ MouseArea {
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     hoverEnabled: !Config.options.bar.tooltips.clickToShow
 
-    onPressed: {
+    onPressed: mouse => {
         if (mouse.button === Qt.RightButton) {
             Weather.getData();
             Quickshell.execDetached(["notify-send", 
@@ -47,6 +47,11 @@ MouseArea {
             text: Weather.data?.temp ?? "--°"
             Layout.alignment: Qt.AlignVCenter
         }
+    }
+
+    cursorShape: Qt.PointingHandCursor
+    onClicked: event => {
+        if (event.button === Qt.LeftButton) weatherPopup.toggle();
     }
 
     WeatherPopup {

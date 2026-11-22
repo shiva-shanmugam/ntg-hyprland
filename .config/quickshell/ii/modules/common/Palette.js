@@ -9,3 +9,5 @@ var cornerRadius = 8
 var muted = "#8A8A8A"
 var text = "#FFFFFF"
 var red = "#D71921"
+var dark = true
+var onAccent = "#FFFFFF"

@@ -1,5 +1,4 @@
 import qs.modules.common
-import "../../common/Palette.js" as Palette
 import qs.modules.common.widgets
 import QtQuick
 import QtQuick.Layouts
@@ -14,10 +13,10 @@ RippleButton {
     property real size: 120
 
     buttonRadius: (button.focus || button.down) ? size / 2 : Appearance.rounding.verylarge
-    colBackground: button.down || button.keyboardDown ? Palette.raised : Palette.panel
-    colBackgroundHover: Palette.surface
-    colRipple: Palette.raised
-    property color colText: destructive || button.activeFocus || button.hovered ? Palette.red : Palette.text
+    colBackground: button.down || button.keyboardDown ? DesktopPalette.raised : DesktopPalette.panel
+    colBackgroundHover: DesktopPalette.surface
+    colRipple: DesktopPalette.raised
+    property color colText: destructive || button.activeFocus || button.hovered ? DesktopPalette.red : DesktopPalette.text
 
     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
     background.implicitHeight: size

@@ -34,6 +34,8 @@ RippleButton {
         StyledSwitch {
             id: switchWidget
             down: root.down
+            activeColor: DesktopPalette.red
+            activeThumbColor: DesktopPalette.onAccent
             Layout.fillWidth: false
             checked: root.checked
             onClicked: root.clicked()

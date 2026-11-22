@@ -47,7 +47,13 @@ MouseArea {
 
     }
 
+    cursorShape: Qt.PointingHandCursor
+    onClicked: event => {
+        if (event.button === Qt.LeftButton) infoPopup.toggle();
+    }
+
     ResourcesPopup {
+        id: infoPopup
         hoverTarget: root
     }
 }

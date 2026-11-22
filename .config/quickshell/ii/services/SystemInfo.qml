@@ -75,10 +75,6 @@ Singleton {
                 case "gentoo": distroIcon = "gentoo-symbolic"; break;
                 default: distroIcon = "linux-symbolic"; break;
             }
-            if (textOsRelease.toLowerCase().includes("nyarch")) {
-                distroIcon = "nyarch-symbolic"
-            }
-
             if (logo.trim().length === 0) {
                 logo = distroIcon
             }

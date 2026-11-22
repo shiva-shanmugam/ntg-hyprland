@@ -6,13 +6,11 @@ import QtQuick
 import QtQuick.Layouts
 
 Item {
-    // Layout.topMargin: 10
-    anchors.topMargin: 10
     property int monthShift: 0
-    property var viewingDate: CalendarLayout.getDateInXMonthsTime(monthShift)
+    property var viewingDate: CalendarLayout.getDateInXMonthsTime(monthShift, DateTime.clock.date)
     property var calendarLayout: CalendarLayout.getCalendarLayout(viewingDate, monthShift === 0)
-    width: calendarColumn.width
-    implicitHeight: calendarColumn.height + 10 * 2
+    implicitWidth: calendarColumn.implicitWidth
+    implicitHeight: calendarColumn.implicitHeight + 20
 
     Keys.onPressed: (event) => {
         if ((event.key === Qt.Key_PageDown || event.key === Qt.Key_PageUp)

@@ -11,3 +11,6 @@ __pycache__/
 .config/illogical-impulse/installed_true
 .local/libexec/
 .local/state/
+
+# runtime theme lock
+.config/nothing-theme/.render.lock

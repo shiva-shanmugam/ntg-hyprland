@@ -550,7 +550,10 @@ class Workspace:
         relative = ".config/nothing-theme"
         source = self.root / relative
         self.resolve(relative)
-        palette_path, palette = self.resolve(relative + "/palette.json")
+        mode_path, mode_file = self.resolve(relative + "/mode")
+        mode_source = self.stage / mode_path if mode_path in self.originals else mode_file
+        mode = text_content(read_regular(mode_source)[0]).strip() if mode_source.is_file() else "dark"
+        palette_path, palette = self.resolve(relative + ("/palette-light.json" if mode == "light" else "/palette.json"))
         current = self.stage / palette_path if palette_path in self.originals else palette
         palette = json.loads(text_content(read_regular(current)[0]))
         if not isinstance(palette, dict) or not all(
@@ -558,15 +561,18 @@ class Workspace:
         ):
             raise ToolError("The theme palette must contain six-digit hex colors")
         # Use the same palette tokens as nothing-theme/render.py without executing workspace code.
-        tokens = {**palette, "corner_radius": 8, **{name + "_hex": value[1:] for name, value in palette.items()}}
+        tokens = {**palette, "corner_radius": 8, "dark_mode": "false" if mode == "light" else "true", **{name + "_hex": value[1:] for name, value in palette.items()}}
         templates = source / "templates"
         candidates = []
         for path in sorted(templates.rglob("*.in")):
             name, _ = self.resolve(path.relative_to(self.root).as_posix())
             current = self.stage / name if name in self.originals else path
             output = path.relative_to(templates).with_suffix("").as_posix()
-            relative_path, live = self.resolve(output, write=True)
             pattern = text_content(read_regular(current)[0])
+            if mode == "light" and output.endswith("/NothingDark.colors"):
+                output = output.removesuffix("NothingDark.colors") + "NothingLight.colors"
+                pattern = pattern.replace("Name=Nothing Dark", "Name=Nothing Light").replace("ColorScheme=NothingDark", "ColorScheme=NothingLight")
+            relative_path, live = self.resolve(output, write=True)
             generated = Template(pattern).substitute(tokens).encode()
             if EXECUTION_PATTERN.search(generated.decode()) and output.endswith((".qml", ".lua")):
                 raise ToolError("Theme templates may not add command-launching code")
@@ -577,6 +583,16 @@ class Workspace:
             else:
                 if before != generated or relative_path in self.originals:
                     candidates.append((relative_path, generated, digest(before)))
+        active_path, active_file = self.resolve(relative + "/active.json", write=True)
+        active = {key: palette[key] for key in ("black", "panel", "surface", "raised", "line", "outline", "muted", "text", "red")}
+        active.update(dark=mode != "light", cornerRadius=8)
+        data = (json.dumps(active, indent=2) + "\n").encode()
+        if active_file.is_file():
+            before = read_regular(active_file)[0]
+            if before != data:
+                candidates.append((active_path, data, digest(before)))
+        else:
+            candidates.append((active_path, data, None))
         for path, data, before in candidates:
             if before is not None:
                 self.read_hashes[path] = before

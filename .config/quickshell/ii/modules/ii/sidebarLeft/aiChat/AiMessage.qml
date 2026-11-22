@@ -27,9 +27,9 @@ Rectangle {
     implicitHeight: columnLayout.implicitHeight + root.messagePadding * 2
 
     radius: Appearance.rounding.surfaceRadius(width, height)
-    color: messageData?.role === "user" ? Appearance.colors.colLayer2 : Appearance.colors.colLayer0Base
+    color: messageData?.role === "user" ? DesktopPalette.raised : DesktopPalette.surface
     border.width: 1
-    border.color: Appearance.colors.colOutlineVariant
+    border.color: DesktopPalette.line
 
     function saveMessage() {
         if (!root.editing) return;
@@ -125,7 +125,7 @@ Rectangle {
                                     messageData?.role == 'user' ? 'linux-symbolic' : 'desktop-symbolic'
 
                                 colorize: true
-                                color: Appearance.m3colors.m3onSecondaryContainer
+                                color: DesktopPalette.text
                             }
 
                             MaterialSymbol {
@@ -133,7 +133,7 @@ Rectangle {
                                 anchors.centerIn: parent
                                 visible: !modelIcon.visible
                                 iconSize: Appearance.font.pixelSize.larger
-                                color: Appearance.m3colors.m3onSecondaryContainer
+                                color: messageData?.role === "user" ? DesktopPalette.red : DesktopPalette.text
                                 text: messageData?.role == 'user' ? 'person' : 
                                     messageData?.role == 'interface' ? 'settings' : 
                                     messageData?.role == 'assistant' ? 'neurology' : 
@@ -147,7 +147,7 @@ Rectangle {
                             Layout.fillWidth: true
                             elide: Text.ElideRight
                             font.pixelSize: Appearance.font.pixelSize.normal
-                            color: Appearance.m3colors.m3onSecondaryContainer
+                            color: DesktopPalette.text
                             text: messageData?.role == 'assistant' ? (Ai.models[messageData?.model]?.name ?? messageData?.model ?? Translation.tr("Assistant")) :
                                 (messageData?.role == 'user' && SystemInfo.username) ? SystemInfo.username :
                                 Translation.tr("Interface")
@@ -310,7 +310,7 @@ Rectangle {
                         radius: Appearance.rounding.windowRounding
                         color: Appearance.colors.colLayer1
                         border.width: 1
-                        border.color: Appearance.colors.colOutlineVariant
+                        border.color: DesktopPalette.line
                         Accessible.role: Accessible.ProgressBar
                         Accessible.name: Translation.tr("Waiting for reply")
 

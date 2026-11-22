@@ -4,7 +4,6 @@ import qs.modules.common
 import qs.modules.common.widgets
 
 ContentPage {
-    forceWidth: true
 
     ContentSection {
         icon: "colors"

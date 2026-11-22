@@ -13,7 +13,19 @@ hl.config({
     decoration = {
         rounding = palette.corner_radius,
         rounding_power = 2,
-        blur = { enabled = false },
+        blur = {
+            enabled = true,
+            size = 8,
+            passes = 3,
+            new_optimizations = false,
+            xray = false,
+            brightness = 1,
+            contrast = 1,
+            noise = 0,
+            vibrancy = 0,
+            popups = false,
+            input_methods = false
+        },
         shadow = { enabled = false },
         dim_strength = 0.035
     },

@@ -1,34 +1,36 @@
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.modules.ii.sidebarRight.nothing
 import QtQuick
-import QtQuick.Layouts
 
-RippleButton {
-    id: button
+Item {
+    id: dayCell
     property string day
     property int isToday
     property bool bold
+    implicitWidth: 38
+    implicitHeight: 38
 
-    Layout.fillWidth: false
-    Layout.fillHeight: false
-    implicitWidth: 38; 
-    implicitHeight: 38;
-
-    toggled: (isToday == 1)
-    buttonRadius: Appearance.rounding.small
-    
-    contentItem: StyledText {
+    Rectangle {
         anchors.fill: parent
-        text: day
-        horizontalAlignment: Text.AlignHCenter
-        font.weight: bold ? Font.DemiBold : Font.Normal
-        color: (isToday == 1) ? Appearance.m3colors.m3onPrimary : 
-            (isToday == 0) ? Appearance.colors.colOnLayer1 : 
-            Appearance.colors.colOutlineVariant
+        visible: dayCell.isToday === 1
+        radius: Appearance.rounding.windowRounding
+        color: DesktopPalette.text
+    }
 
-        Behavior on color {
-            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
-        }
+    DotText {
+        anchors.centerIn: parent
+        visible: !dayCell.bold
+        text: dayCell.day
+        onColor: dayCell.isToday === 1 ? DesktopPalette.black : dayCell.isToday === 0 ? DesktopPalette.text : DesktopPalette.muted
+    }
+
+    StyledText {
+        anchors.centerIn: parent
+        visible: dayCell.bold
+        text: dayCell.day
+        font.family: Appearance.font.family.monospace
+        font.pixelSize: 11
+        color: DesktopPalette.muted
     }
 }
-

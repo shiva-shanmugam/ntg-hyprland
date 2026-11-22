@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
+import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
 import qs.services
@@ -9,49 +9,51 @@ import qs.modules.common.widgets
 import qs.modules.common.functions
 
 ContentPage {
-    forceWidth: true
 
-    Process {
-        id: randomWallProc
-        property string status: ""
-        property string scriptPath: `${Directories.scriptPath}/colors/random/random_konachan_wall.sh`
-        command: ["bash", "-c", FileUtils.trimFileProtocol(randomWallProc.scriptPath)]
-        stdout: SplitParser {
-            onRead: data => {
-                randomWallProc.status = data.trim();
+    component SmallLightDarkPreferenceButton: Button {
+        id: choice
+        required property bool dark
+        readonly property bool selected: Appearance.m3colors.darkmode === dark
+        Layout.fillWidth: true
+        implicitHeight: 52
+        hoverEnabled: true
+        text: dark ? Translation.tr("Dark") : Translation.tr("Light")
+        onClicked: if (!selected) MaterialThemeLoader.setMode(dark ? "dark" : "light")
+
+        background: Rectangle {
+            radius: Appearance.rounding.windowRounding
+            color: choice.selected || choice.hovered ? DesktopPalette.raised : DesktopPalette.surface
+            border.width: 1
+            border.color: choice.selected || choice.visualFocus ? DesktopPalette.red : DesktopPalette.line
+        }
+
+        contentItem: RowLayout {
+            spacing: 8
+            Item { Layout.fillWidth: true }
+            MaterialSymbol {
+                text: choice.dark ? "dark_mode" : "light_mode"
+                iconSize: 23
+                color: choice.selected ? DesktopPalette.red : DesktopPalette.muted
             }
+            StyledText {
+                text: choice.text
+                color: DesktopPalette.text
+                font.family: Appearance.font.family.monospace
+            }
+            Item { Layout.fillWidth: true }
         }
     }
 
-    component SmallLightDarkPreferenceButton: RippleButton {
-        id: smallLightDarkPreferenceButton
-        required property bool dark
-        property color colText: toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer2
-        padding: 5
-        Layout.fillWidth: true
-        toggled: Appearance.m3colors.darkmode === dark
-        colBackground: Appearance.colors.colLayer2
-        onClicked: {
-            Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"} --noswitch`]);
-        }
-        contentItem: Item {
-            anchors.centerIn: parent
-            ColumnLayout {
-                anchors.centerIn: parent
-                spacing: 0
-                MaterialSymbol {
-                    Layout.alignment: Qt.AlignHCenter
-                    iconSize: 30
-                    text: dark ? "dark_mode" : "light_mode"
-                    color: smallLightDarkPreferenceButton.colText
-                }
-                StyledText {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: dark ? Translation.tr("Dark") : Translation.tr("Light")
-                    font.pixelSize: Appearance.font.pixelSize.smaller
-                    color: smallLightDarkPreferenceButton.colText
-                }
-            }
+    ContentSection {
+        icon: "contrast"
+        title: Translation.tr("Appearance")
+
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 8
+
+            SmallLightDarkPreferenceButton { dark: false }
+            SmallLightDarkPreferenceButton { dark: true }
         }
     }
 
@@ -64,58 +66,29 @@ ContentPage {
         RowLayout {
             Layout.fillWidth: true
 
-            Item {
-                implicitWidth: 340
-                implicitHeight: 200
-                
-                StyledImage {
-                    id: wallpaperPreview
+            Rectangle {
+                Layout.preferredWidth: 320
+                Layout.minimumWidth: 180
+                Layout.preferredHeight: 178
+                Layout.fillWidth: true
+                color: DesktopPalette.panel
+                border.width: 1
+                border.color: DesktopPalette.line
+
+                Image {
                     anchors.fill: parent
+                    anchors.margins: 1
+                    asynchronous: true
+                    clip: true
                     fillMode: Image.PreserveAspectCrop
-                    source: Config.options.background.wallpaperPath
-                    cache: false
-                    layer.enabled: true
-                    layer.effect: OpacityMask {
-                        maskSource: Rectangle {
-                            width: 360
-                            height: 200
-                            radius: Appearance.rounding.normal
-                        }
-                    }
+                    readonly property string wallpaper: Config.options.background.wallpaperPath
+                    readonly property bool video: /\.(mp4|webm|mkv|avi|mov)$/i.test(wallpaper)
+                    source: (video ? Config.options.background.thumbnailPath : wallpaper)
+                        || Quickshell.shellPath("assets/images/default_wallpaper.png")
                 }
             }
 
             ColumnLayout {
-                RippleButtonWithIcon {
-                    enabled: !randomWallProc.running
-                    visible: Config.options.policies.weeb === 1
-                    Layout.fillWidth: true
-                    buttonRadius: Appearance.rounding.small
-                    materialIcon: "ifl"
-                    mainText: randomWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random: Konachan")
-                    onClicked: {
-                        randomWallProc.scriptPath = `${Directories.scriptPath}/colors/random/random_konachan_wall.sh`;
-                        randomWallProc.running = true;
-                    }
-                    StyledToolTip {
-                        text: Translation.tr("Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers")
-                    }
-                }
-                RippleButtonWithIcon {
-                    enabled: !randomWallProc.running
-                    visible: Config.options.policies.weeb === 1
-                    Layout.fillWidth: true
-                    buttonRadius: Appearance.rounding.small
-                    materialIcon: "ifl"
-                    mainText: randomWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random: osu! seasonal")
-                    onClicked: {
-                        randomWallProc.scriptPath = `${Directories.scriptPath}/colors/random/random_osu_wall.sh`;
-                        randomWallProc.running = true;
-                    }
-                    StyledToolTip {
-                        text: Translation.tr("Random osu! seasonal background\nImage is saved to ~/Pictures/Wallpapers")
-                    }
-                }
                 RippleButtonWithIcon {
                     Layout.fillWidth: true
                     materialIcon: "wallpaper"
@@ -152,21 +125,7 @@ ContentPage {
                         }
                     }
                 }
-                RowLayout {
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    uniformCellSizes: true
 
-                    SmallLightDarkPreferenceButton {
-                        Layout.fillHeight: true
-                        dark: false
-                    }
-                    SmallLightDarkPreferenceButton {
-                        Layout.fillHeight: true
-                        dark: true
-                    }
-                }
             }
         }
 

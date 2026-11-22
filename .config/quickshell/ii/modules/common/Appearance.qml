@@ -1,4 +1,3 @@
-import "Palette.js" as Palette
 import QtQuick
 import Quickshell
 import qs.modules.common.functions
@@ -7,6 +6,7 @@ pragma ComponentBehavior: Bound
 
 Singleton {
     id: root
+    property var wallpaperColors: ({})
     property QtObject m3colors
     property QtObject animation
     property QtObject animationCurves
@@ -40,61 +40,61 @@ Singleton {
     property real contentTransparency: Config?.options.appearance.transparency.automatic ? autoContentTransparency : Config?.options.appearance.transparency.contentTransparency
 
     m3colors: QtObject {
-        property bool darkmode: true
+        property bool darkmode: root.wallpaperColors.m3background === undefined ? DesktopPalette.dark : m3background.hslLightness < 0.5
         property bool transparent: false
-        property color m3background: Palette.black
-        property color m3onBackground: Palette.text
-        property color m3surface: Palette.panel
-        property color m3surfaceDim: Palette.panel
-        property color m3surfaceBright: Palette.raised
-        property color m3surfaceContainerLowest: Palette.panel
-        property color m3surfaceContainerLow: Palette.surface
-        property color m3surfaceContainer: Palette.surface
-        property color m3surfaceContainerHigh: Palette.raised
-        property color m3surfaceContainerHighest: Palette.raised
-        property color m3onSurface: Palette.text
-        property color m3surfaceVariant: Palette.line
-        property color m3onSurfaceVariant: Palette.muted
-        property color m3inverseSurface: Palette.text
-        property color m3inverseOnSurface: Palette.black
-        property color m3outline: Palette.muted
-        property color m3outlineVariant: Palette.line
-        property color m3shadow: Palette.black
-        property color m3scrim: Palette.black
-        property color m3surfaceTint: Palette.text
-        property color m3primary: Palette.text
-        property color m3onPrimary: Palette.black
-        property color m3primaryContainer: Palette.raised
-        property color m3onPrimaryContainer: Palette.text
-        property color m3inversePrimary: Palette.muted
-        property color m3secondary: Palette.muted
-        property color m3onSecondary: Palette.black
-        property color m3secondaryContainer: Palette.raised
-        property color m3onSecondaryContainer: Palette.text
-        property color m3tertiary: Palette.muted
-        property color m3onTertiary: Palette.black
-        property color m3tertiaryContainer: Palette.raised
-        property color m3onTertiaryContainer: Palette.text
-        property color m3error: Palette.red
-        property color m3onError: Palette.black
-        property color m3errorContainer: Palette.red
-        property color m3onErrorContainer: Palette.text
-        property color m3primaryFixed: Palette.text
-        property color m3primaryFixedDim: Palette.muted
-        property color m3onPrimaryFixed: Palette.black
-        property color m3onPrimaryFixedVariant: Palette.black
-        property color m3secondaryFixed: Palette.text
-        property color m3secondaryFixedDim: Palette.muted
-        property color m3onSecondaryFixed: Palette.black
-        property color m3onSecondaryFixedVariant: Palette.black
-        property color m3tertiaryFixed: Palette.text
-        property color m3tertiaryFixedDim: Palette.muted
-        property color m3onTertiaryFixed: Palette.black
-        property color m3onTertiaryFixedVariant: Palette.black
-        property color m3success: Palette.text
-        property color m3onSuccess: Palette.black
-        property color m3successContainer: Palette.raised
-        property color m3onSuccessContainer: Palette.text
+        property color m3background: root.wallpaperColors.m3background ?? DesktopPalette.black
+        property color m3onBackground: root.wallpaperColors.m3onBackground ?? DesktopPalette.text
+        property color m3surface: root.wallpaperColors.m3surface ?? DesktopPalette.panel
+        property color m3surfaceDim: root.wallpaperColors.m3surfaceDim ?? DesktopPalette.panel
+        property color m3surfaceBright: root.wallpaperColors.m3surfaceBright ?? DesktopPalette.raised
+        property color m3surfaceContainerLowest: root.wallpaperColors.m3surfaceContainerLowest ?? DesktopPalette.panel
+        property color m3surfaceContainerLow: root.wallpaperColors.m3surfaceContainerLow ?? DesktopPalette.surface
+        property color m3surfaceContainer: root.wallpaperColors.m3surfaceContainer ?? DesktopPalette.surface
+        property color m3surfaceContainerHigh: root.wallpaperColors.m3surfaceContainerHigh ?? DesktopPalette.raised
+        property color m3surfaceContainerHighest: root.wallpaperColors.m3surfaceContainerHighest ?? DesktopPalette.raised
+        property color m3onSurface: root.wallpaperColors.m3onSurface ?? DesktopPalette.text
+        property color m3surfaceVariant: root.wallpaperColors.m3surfaceVariant ?? DesktopPalette.line
+        property color m3onSurfaceVariant: root.wallpaperColors.m3onSurfaceVariant ?? DesktopPalette.muted
+        property color m3inverseSurface: root.wallpaperColors.m3inverseSurface ?? DesktopPalette.text
+        property color m3inverseOnSurface: root.wallpaperColors.m3inverseOnSurface ?? DesktopPalette.black
+        property color m3outline: root.wallpaperColors.m3outline ?? DesktopPalette.muted
+        property color m3outlineVariant: root.wallpaperColors.m3outlineVariant ?? DesktopPalette.line
+        property color m3shadow: root.wallpaperColors.m3shadow ?? DesktopPalette.black
+        property color m3scrim: root.wallpaperColors.m3scrim ?? DesktopPalette.black
+        property color m3surfaceTint: root.wallpaperColors.m3surfaceTint ?? DesktopPalette.text
+        property color m3primary: root.wallpaperColors.m3primary ?? DesktopPalette.text
+        property color m3onPrimary: root.wallpaperColors.m3onPrimary ?? DesktopPalette.black
+        property color m3primaryContainer: root.wallpaperColors.m3primaryContainer ?? DesktopPalette.raised
+        property color m3onPrimaryContainer: root.wallpaperColors.m3onPrimaryContainer ?? DesktopPalette.text
+        property color m3inversePrimary: root.wallpaperColors.m3inversePrimary ?? DesktopPalette.muted
+        property color m3secondary: root.wallpaperColors.m3secondary ?? DesktopPalette.muted
+        property color m3onSecondary: root.wallpaperColors.m3onSecondary ?? DesktopPalette.black
+        property color m3secondaryContainer: root.wallpaperColors.m3secondaryContainer ?? DesktopPalette.raised
+        property color m3onSecondaryContainer: root.wallpaperColors.m3onSecondaryContainer ?? DesktopPalette.text
+        property color m3tertiary: root.wallpaperColors.m3tertiary ?? DesktopPalette.muted
+        property color m3onTertiary: root.wallpaperColors.m3onTertiary ?? DesktopPalette.black
+        property color m3tertiaryContainer: root.wallpaperColors.m3tertiaryContainer ?? DesktopPalette.raised
+        property color m3onTertiaryContainer: root.wallpaperColors.m3onTertiaryContainer ?? DesktopPalette.text
+        property color m3error: root.wallpaperColors.m3error ?? DesktopPalette.red
+        property color m3onError: root.wallpaperColors.m3onError ?? DesktopPalette.onAccent
+        property color m3errorContainer: root.wallpaperColors.m3errorContainer ?? DesktopPalette.red
+        property color m3onErrorContainer: root.wallpaperColors.m3onErrorContainer ?? DesktopPalette.onAccent
+        property color m3primaryFixed: root.wallpaperColors.m3primaryFixed ?? DesktopPalette.text
+        property color m3primaryFixedDim: root.wallpaperColors.m3primaryFixedDim ?? DesktopPalette.muted
+        property color m3onPrimaryFixed: root.wallpaperColors.m3onPrimaryFixed ?? DesktopPalette.black
+        property color m3onPrimaryFixedVariant: root.wallpaperColors.m3onPrimaryFixedVariant ?? DesktopPalette.black
+        property color m3secondaryFixed: root.wallpaperColors.m3secondaryFixed ?? DesktopPalette.text
+        property color m3secondaryFixedDim: root.wallpaperColors.m3secondaryFixedDim ?? DesktopPalette.muted
+        property color m3onSecondaryFixed: root.wallpaperColors.m3onSecondaryFixed ?? DesktopPalette.black
+        property color m3onSecondaryFixedVariant: root.wallpaperColors.m3onSecondaryFixedVariant ?? DesktopPalette.black
+        property color m3tertiaryFixed: root.wallpaperColors.m3tertiaryFixed ?? DesktopPalette.text
+        property color m3tertiaryFixedDim: root.wallpaperColors.m3tertiaryFixedDim ?? DesktopPalette.muted
+        property color m3onTertiaryFixed: root.wallpaperColors.m3onTertiaryFixed ?? DesktopPalette.black
+        property color m3onTertiaryFixedVariant: root.wallpaperColors.m3onTertiaryFixedVariant ?? DesktopPalette.black
+        property color m3success: root.wallpaperColors.m3success ?? DesktopPalette.text
+        property color m3onSuccess: root.wallpaperColors.m3onSuccess ?? DesktopPalette.black
+        property color m3successContainer: root.wallpaperColors.m3successContainer ?? DesktopPalette.raised
+        property color m3onSuccessContainer: root.wallpaperColors.m3onSuccessContainer ?? DesktopPalette.text
         property color term0: "#EDE4E4"
         property color term1: "#B52755"
         property color term2: "#A97363"
@@ -121,7 +121,7 @@ Singleton {
         property color colOnLayer0: m3colors.m3onBackground
         property color colLayer0Hover: ColorUtils.transparentize(ColorUtils.mix(colLayer0, colOnLayer0, 0.9, root.contentTransparency))
         property color colLayer0Active: ColorUtils.transparentize(ColorUtils.mix(colLayer0, colOnLayer0, 0.8, root.contentTransparency))
-        property color colLayer0Border: Palette.outline
+        property color colLayer0Border: DesktopPalette.outline
         // Layer 1
         property color colLayer1Base: m3colors.m3surfaceContainerLow
         property color colLayer1: ColorUtils.solveOverlayColor(colLayer0Base, colLayer1Base, 1 - root.contentTransparency);
@@ -213,7 +213,7 @@ Singleton {
         property int verylarge: 18
         property int full: 9999
         property int screenRounding: large
-        readonly property int windowRounding: Palette.cornerRadius
+        readonly property int windowRounding: DesktopPalette.cornerRadius
         function surfaceRadius(width: real, height: real): real {
             return Math.min(windowRounding, Math.max(0, Math.min(width, height)) / 2);
         }
@@ -413,7 +413,7 @@ Singleton {
         property real searchWidth: 360
         property real sidebarWidth: 460
         property real sidebarWidthExtended: 750
-        property real baseVerticalBarWidth: 46
+        property real baseVerticalBarWidth: 56
         property real verticalBarWidth: Config.options.bar.cornerStyle === 1 ? 
             (baseVerticalBarWidth + root.sizes.hyprlandGapsOut * 2) : baseVerticalBarWidth
         property real wallpaperSelectorWidth: 1200

@@ -9,3 +9,5 @@ var cornerRadius = $corner_radius
 var muted = "$muted"
 var text = "$text"
 var red = "$red"
+var dark = $dark_mode
+var onAccent = "#FFFFFF"

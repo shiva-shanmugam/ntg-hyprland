@@ -1,0 +1,6 @@
+{
+  "black": "#F5F5F3", "panel": "#FFFFFF", "surface": "#EEEEE9",
+  "raised": "#E5E5E1", "line": "#CDCDCA", "muted": "#585854",
+  "outline": "#82827D",
+  "text": "#171716", "red": "#D71921"
+}

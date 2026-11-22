@@ -60,7 +60,8 @@ Scope {
                     Appearance.sizes.baseVerticalBarWidth + (Config.options.bar.cornerStyle === 1 ? Appearance.sizes.hyprlandGapsOut : 0)
                 WlrLayershell.namespace: "quickshell:verticalBar"
                 // WlrLayershell.layer: WlrLayer.Overlay // TODO enable this when bar can hide when fullscreen
-                implicitWidth: Appearance.sizes.verticalBarWidth + Appearance.rounding.screenRounding
+                implicitWidth: Appearance.sizes.verticalBarWidth
+                    + (bar.showBarBackground && Config.options.bar.cornerStyle === 0 ? Appearance.rounding.screenRounding : 0)
                 mask: Region {
                     item: hoverMaskRegion
                 }
@@ -130,7 +131,7 @@ Scope {
                             PropertyChanges {
                                 target: barContent
                                 anchors.topMargin: 0
-                                anchors.rightMargin: (Config?.options.bar.autoHide.enable && !mustShow) ? -Appearance.sizes.barHeight : 0
+                                anchors.rightMargin: (Config?.options.bar.autoHide.enable && !mustShow) ? -Appearance.sizes.verticalBarWidth : 0
                             }
                         }
                     }

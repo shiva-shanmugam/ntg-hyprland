@@ -26,7 +26,7 @@ RippleButton {
         text: buttonText
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: Appearance.font.pixelSize.larger
-        color: Appearance.colors.colOnLayer1
+        color: Appearance.colors.colOnLayer0
     }
 
     StyledToolTip {
